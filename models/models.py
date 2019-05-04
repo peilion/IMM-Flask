@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from db_config import Base
 import datetime
 from sqlalchemy_utils.types.choice import ChoiceType
+from sqlalchemy.ext.declarative import declared_attr
 
 table_args = {
     'mysql_engine': 'InnoDB',
@@ -16,13 +17,15 @@ table_args = {
 
 
 class User(Base):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String(64))
 
     __table_args__ = table_args
 
 
 class Manufacturer(Base):
+    __tablename__ = 'manufacturer'
     id = Column(Integer, primary_key=True)
     name = Column(String(64), unique=True)
     telephone = Column(String(30), nullable=True)
@@ -46,8 +49,6 @@ class Asset(object):
     id = Column(Integer, primary_key=True)
     name = Column(String(64), unique=True)
     sn = Column(String(128), unique=True)
-    manufacturer_id = Column(Integer, ForeignKey('manufacturer.id'))
-    manufacturer = relationship('Manufacturer', back_populates='assets')
     health_indicator = Column(Float, default=85)
     lr_time = Column(DateTime, nullable=True)
     cr_time = Column(DateTime, nullable=True, default=func.now())
@@ -55,10 +56,19 @@ class Asset(object):
     equip_type = Column(ChoiceType(TYPES))
     memo = Column(Text, nullable=True)
 
+    @declared_attr
+    def manufacturer_id(cls):
+        return Column(Integer, ForeignKey('manufacturer.id'))
+
+    @declared_attr
+    def manufacturer(cls):
+        return relationship('Manufacturer', back_populates='assets')
+
     __table_args__ = table_args
 
 
 class Motor(Asset, Base):
+    __tablename__ = 'motor'
     phase_number = Column(SmallInteger, nullable=True, default=3)
     pole_pairs_number = Column(SmallInteger, nullable=True, default=2)
     turn_number = Column(SmallInteger, nullable=True, default=50)
@@ -69,6 +79,8 @@ class Motor(Asset, Base):
 
 
 class Bearing(Asset, Base):
+    __tablename__ = 'bearing'
+
     motor_id = Column(Integer, ForeignKey('motor.id'), nullable=True)
     motor = relationship('Motor', back_populates='bearings')
     inner_race_diameter = Column(Float, nullable=True)
@@ -81,6 +93,8 @@ class Bearing(Asset, Base):
 
 
 class Rotor(Asset, Base):
+    __tablename__ = 'rotor'
+
     motor_id = Column(Integer, ForeignKey('motor.id'), nullable=True)
     motor = relationship('Motor', back_populates='rotors')
     length = Column(Float, nullable=True)
@@ -90,6 +104,8 @@ class Rotor(Asset, Base):
 
 
 class Stator(Asset, Base):
+    __tablename__ = 'stator'
+
     motor_id = Column(Integer, ForeignKey('motor.id'), nullable=True)
     motor = relationship('Motor', back_populates='stators')
     length = Column(Float, nullable=True)
@@ -347,6 +363,8 @@ class SymComponent(object):
 
 
 class WarningLog(Base):
+    __tablename__ = 'warninglog'
+
     SEVERITIES = [(0, 'Attention'),
                   (1, 'Serious'),
                   ]
@@ -362,6 +380,8 @@ class WarningLog(Base):
 
 
 class MonthlyRecord(Base):
+    __tablename__ = 'monthlyrecord'
+
     id = Column(Integer, primary_key=True)
     cr_time = Column(DateTime, nullable=True, default=func.now())
     description = Column(Text, nullable=False)

@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('mysql://root:@localhost/flask', convert_unicode=True)
+engine = create_engine('mysql://root:8315814@localhost/flask', convert_unicode=True)
 session = scoped_session(sessionmaker(autocommit=False,
                                       autoflush=False,
                                       bind=engine))
