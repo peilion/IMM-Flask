@@ -5,13 +5,10 @@ from sqlalchemy import Column, Integer, String, SmallInteger, \
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils.types.choice import ChoiceType
-
 from db_config import Base
+from models.sharding_models import *
+from db_config import table_args
 
-table_args = {
-    'mysql_engine': 'InnoDB',
-    'mysql_charset': 'utf8'
-}
 
 
 class User(Base):
@@ -137,3 +134,15 @@ class MonthlyRecord(Base):
     description = Column(Text, nullable=False)
 
     __table_args__ = table_args
+
+for i in range(1,4):
+    CurrentsPackModel = CurrentsPack.model(motor_id=i)
+    UphaseModel = Uphase.model(motor_id=i)
+    VphaseModel = Vphase.model(motor_id=i)
+    WphaseModel = Wphase.model(motor_id=i)
+    UfeatureModel = Ufeature.model(motor_id=i)
+    VfeatureModel = Vfeature.model(motor_id=i)
+    WfeatureModel = Wfeature.model(motor_id=i)
+    SymCompModel = SymComponent.model(motor_id=i)
+
+# for i in range(1,4):

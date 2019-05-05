@@ -4,8 +4,7 @@
 from sqlalchemy import Column, Integer, BigInteger, SmallInteger, \
     ForeignKey, Float, DateTime, func, LargeBinary
 from sqlalchemy.orm import relationship
-from models import table_args
-from db_config import Base
+from db_config import table_args,Base
 
 
 class CurrentsPack(object):
@@ -20,7 +19,7 @@ class CurrentsPack(object):
             ModelClass = type(class_name, (Base,), dict(
                 __module__=__name__,
                 __name__=class_name,
-                __tablename__='curentspack_%d' % table_index,
+                __tablename__='currentspack_%d' % table_index,
                 id=Column(BigInteger, primary_key=True),
                 time=Column(DateTime, default=func.now()),
                 motor_id=Column(Integer, ForeignKey('motor.id'), nullable=False),
@@ -61,7 +60,7 @@ class Uphase(object):
                 frequency=Column(Float, default=0),
                 amplitude=Column(Float, default=0),
                 initial_phase=Column(Float, default=0),
-                pack_id=Column(Integer, ForeignKey('curentspack_{0}.id'.format(table_index))),
+                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index))),
 
                 pack=relationship('currentspack_%d' % table_index, back_populates='uphase'),
 
@@ -90,7 +89,7 @@ class Vphase(object):
                 frequency=Column(Float, default=0),
                 amplitude=Column(Float, default=0),
                 initial_phase=Column(Float, default=0),
-                pack_id=Column(Integer, ForeignKey('curentspack_{0}.id'.format(table_index))),
+                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index))),
 
                 pack=relationship('currentspack_%d' % table_index, back_populates='vphase'),
 
@@ -113,13 +112,13 @@ class Wphase(object):
             ModelClass = type(class_name, (Base,), dict(
                 __module__=__name__,
                 __name__=class_name,
-                __tablename__='vphase_%d' % table_index,
+                __tablename__='wphase_%d' % table_index,
                 id=Column(BigInteger, primary_key=True),
                 signal=Column(LargeBinary, nullable=False),
                 frequency=Column(Float, default=0),
                 amplitude=Column(Float, default=0),
                 initial_phase=Column(Float, default=0),
-                pack_id=Column(Integer, ForeignKey('curentspack_{0}.id'.format(table_index))),
+                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index))),
 
                 pack=relationship('currentspack_%d' % table_index, back_populates='wphase'),
 
@@ -151,7 +150,7 @@ class Ufeature(object):
                 min_current=Column(Float, default=0),
                 fbrb=Column(LargeBinary, nullable=True),
 
-                pack_id=Column(Integer, ForeignKey('curentspack_{0}.id'.format(table_index))),
+                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index))),
 
                 pack=relationship('currentspack_%d' % table_index, back_populates='wphase'),
 
@@ -183,7 +182,7 @@ class Vfeature(object):
                 min_current=Column(Float, default=0),
                 fbrb=Column(LargeBinary, nullable=True),
 
-                pack_id=Column(Integer, ForeignKey('curentspack_{0}.id'.format(table_index))),
+                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index))),
 
                 pack=relationship('currentspack_%d' % table_index, back_populates='wphase'),
 
@@ -215,7 +214,7 @@ class Wfeature(object):
                 min_current=Column(Float, default=0),
                 fbrb=Column(LargeBinary, nullable=True),
 
-                pack_id=Column(Integer, ForeignKey('curentspack_{0}.id'.format(table_index))),
+                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index))),
 
                 pack=relationship('currentspack_%d' % table_index, back_populates='wphase'),
 
@@ -245,7 +244,7 @@ class SymComponent(object):
                 z_rms=Column(Float, default=0),
                 imbalance=Column(Float, default=0),
 
-                pack_id=Column(Integer, ForeignKey('curentspack_{0}.id'.format(table_index))),
+                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index))),
 
                 pack=relationship('currentspack_%d' % table_index, back_populates='symcomponent'),
 
