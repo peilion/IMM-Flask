@@ -19,12 +19,13 @@ table_args = {
 SHARDING_NUMBER = 3
 
 engine = create_engine('mysql://root:8315814@localhost/flask', convert_unicode=True)
-session = scoped_session(sessionmaker(autocommit=False,
+Session = scoped_session(sessionmaker(autocommit=False,
                                       autoflush=False,
                                       bind=engine))
 Base = declarative_base()
-Base.query = session.query_property()
+Base.query = Session.query_property()
 
-from models import models
+from models.models import *
+from models.sharding_models import *
 # Base.metadata.drop_all(bind=engine)
 # Base.metadata.create_all(bind=engine)

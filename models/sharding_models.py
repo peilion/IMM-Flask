@@ -153,3 +153,13 @@ class SymComponent(object):
             SymComponent._mapper[class_name] = ModelClass
         cls = ModelClass
         return cls
+
+for i in range(1, 4):
+    CurrentsPackModel = CurrentsPack.model(motor_id=i)
+    UphaseModel = Uphase.model(motor_id=i)
+    VphaseModel = Vphase.model(motor_id=i)
+    WphaseModel = Wphase.model(motor_id=i)
+    UfeatureModel = Ufeature.model(motor_id=i)
+    VfeatureModel = Vfeature.model(motor_id=i)
+    WfeatureModel = Wfeature.model(motor_id=i)
+    SymCompModel = SymComponent.model(motor_id=i)

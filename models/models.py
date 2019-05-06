@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from sqlalchemy import Column, Integer, SmallInteger, \
+    ForeignKey, Float, DateTime, func
 from sqlalchemy import String, Text
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import relationship
 from sqlalchemy_utils.types.choice import ChoiceType
-from models.sharding_models import *
+
 from db_config import Base
 from db_config import table_args
+
 
 class User(Base):
     __tablename__ = 'user'
@@ -36,7 +40,13 @@ class Asset(object):
              (2, 'Rotor'),
              (3, 'Stator'),
              ]
-
+    STATUS = [
+        (0, 'Excellent'),
+        (1, 'Good'),
+        (2, 'Moderate'),
+        (3, 'Poor'),
+        (4, 'Offline'),
+    ]
     id = Column(Integer, primary_key=True)
     name = Column(String(64), unique=True)
     sn = Column(String(128), unique=True)
@@ -46,6 +56,7 @@ class Asset(object):
     md_time = Column(DateTime, nullable=True, default=func.now(), onupdate=func.now())
     equip_type = Column(ChoiceType(TYPES))
     memo = Column(Text, nullable=True)
+    statu = Column(ChoiceType(STATUS))
 
     @declared_attr
     def manufacturer_id(cls):
@@ -53,7 +64,7 @@ class Asset(object):
 
     @declared_attr
     def manufacturer(cls):
-        return relationship('Manufacturer', back_populates='assets')
+        return relationship('Manufacturer')
 
     __table_args__ = table_args
 
@@ -130,14 +141,3 @@ class MonthlyRecord(Base):
     description = Column(Text, nullable=False)
 
     __table_args__ = table_args
-
-
-for i in range(1, 4):
-    CurrentsPackModel = CurrentsPack.model(motor_id=i)
-    UphaseModel = Uphase.model(motor_id=i)
-    VphaseModel = Vphase.model(motor_id=i)
-    WphaseModel = Wphase.model(motor_id=i)
-    UfeatureModel = Ufeature.model(motor_id=i)
-    VfeatureModel = Vfeature.model(motor_id=i)
-    WfeatureModel = Wfeature.model(motor_id=i)
-    SymCompModel = SymComponent.model(motor_id=i)
