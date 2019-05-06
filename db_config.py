@@ -25,7 +25,6 @@ session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = session.query_property()
 
-
-def init_db():
-    from models import models
-    Base.metadata.create_all(bind=engine)
+from models import models
+# Base.metadata.drop_all(bind=engine)
+# Base.metadata.create_all(bind=engine)

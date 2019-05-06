@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from sqlalchemy import Column, Integer, String, SmallInteger, \
-    ForeignKey, Float, DateTime, func, Text
+from sqlalchemy import String, Text
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import relationship
 from sqlalchemy_utils.types.choice import ChoiceType
-from db_config import Base
 from models.sharding_models import *
+from db_config import Base
 from db_config import table_args
-
-
 
 class User(Base):
     __tablename__ = 'user'
@@ -22,7 +18,7 @@ class User(Base):
 class Manufacturer(Base):
     __tablename__ = 'manufacturer'
     id = Column(Integer, primary_key=True)
-    name = Column(String(64), unique=True)
+    name = Column(String(32), unique=True)
     telephone = Column(String(30), nullable=True)
     user = relationship('asset', back_populates="manufacturer")
 
@@ -135,7 +131,8 @@ class MonthlyRecord(Base):
 
     __table_args__ = table_args
 
-for i in range(1,4):
+
+for i in range(1, 4):
     CurrentsPackModel = CurrentsPack.model(motor_id=i)
     UphaseModel = Uphase.model(motor_id=i)
     VphaseModel = Vphase.model(motor_id=i)
@@ -144,5 +141,3 @@ for i in range(1,4):
     VfeatureModel = Vfeature.model(motor_id=i)
     WfeatureModel = Wfeature.model(motor_id=i)
     SymCompModel = SymComponent.model(motor_id=i)
-
-# for i in range(1,4):
