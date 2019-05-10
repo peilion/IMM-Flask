@@ -1,9 +1,6 @@
-from motors.models import CurrentSignalPack, Ufeature, Vfeature, Wfeature, SymComponent, Uphase, \
-    Vphase, Wphase
 import numpy as np
 from scipy import signal, fftpack, optimize
 
-dataset = CurrentSignalPack.objects.all()
 
 def cal_samples(phaseAOmega, phaseBOmega, phaseCOmega, end_time):
     '''
@@ -17,7 +14,7 @@ def cal_samples(phaseAOmega, phaseBOmega, phaseCOmega, end_time):
     return samples
 
 
-def make_phase(mag, omega, phi, samples, end_time):git
+def make_phase(mag, omega, phi, samples, end_time):
     '''
     Create the phase signal in complex form.
     '''
@@ -39,7 +36,6 @@ def parameter_estimation(wave, sampling_rate, initailization):
 
 
 def cal_symm(a, b, c):
-
     # 120 degree rotator
     ALPHA = np.exp(1j * 2 / 3 * np.pi)
 
@@ -78,14 +74,9 @@ def to_complex(r, x, real_offset=0, imag_offset=0):
 
     return (real + 1j * imag)
 
-for pack in dataset:
 
-    dataset = CurrentSignalPack.objects.all()
-    u = np.fromstring(pack.uphase.signal)
-    v = np.fromstring(pack.vphase.signal)
-    w = np.fromstring(pack.wphase.signal)
-
-    RATE = pack.sampling_rate
+def feature_calculator(u, v, w):
+    RATE = 20480
     LENGTH = u.shape[0]
     FREQ_INTERVAL = RATE / 2 / (LENGTH / 2)
     PSF_list = []
@@ -101,14 +92,40 @@ for pack in dataset:
         phase = signal.detrend(phase, type='constant')
         phase_fft = fftransform(phase)
         phase_fft_axis = np.linspace(0, RATE / 2, len(phase) / 2 + 1)
+
         # Power supply frequency
         PSF = phase_fft_axis[np.argmax(phase_fft)]
+
+        harmonics_index = [i * PSF / FREQ_INTERVAL for i in range(2, 20)]
+        total = 0
+        harmonics = []
+        fundamental = phase_fft[int(PSF / FREQ_INTERVAL)]
+        for hm in harmonics_index:
+            nth_harmonic = phase_fft[int(hm)] / fundamental
+            total = total + nth_harmonic ** 2
+            harmonics.append(nth_harmonic)
+        harmonics = np.array(harmonics)
+        # total = np.sqrt(total)
+        THD = np.sqrt(total)
+        # Hilbert transform
+        Shiftted = np.abs(signal.hilbert(phase))
+        phase_envelope = signal.detrend(Shiftted[1024:1024 + 4096])
+        # Hilebert spectrum
+        phase_envelope_fft = fftransform(phase_envelope)
+        brb_list.append(phase_envelope_fft[:10])
+
         # RMS
+        rms = np.sqrt(np.dot(phase, phase) / phase.size)
+
         # Maximum and minimum
         maximum = np.max(phase)
+        minimum = np.min(phase)
         PSF_list.append(PSF)
         max_list.append(maximum)
-
+        harmonics_list.append(harmonics)
+        THD_list.append(THD)
+        rms_list.append(rms)
+        min_list.append(minimum)
     i = 0
     p = []
     for phase in [u, v, w]:
@@ -118,14 +135,25 @@ for pack in dataset:
         p.append(p1)
         i = i + 1
         # Calculate complex data
-    def update_phase(phase, index):
-        _t = phase.objects.get(signal_pack=pack)
-        _t.frequency = p[index][1]
-        _t.amplitude = p[index][0]
-        _t.initial_phase = p[index][2]
-        _t.save()
 
+    samples = cal_samples(2 * np.pi * p[0][1], 2 * np.pi * p[1][1], 2 * np.pi * p[2][1], end_time=LENGTH / RATE)
 
-    update_phase(Uphase, index=0)
-    update_phase(Vphase, index=1)
-    update_phase(Wphase, index=2)
+    i = 0
+    for phase in [u, v, w]:
+        complex_phase, _ = make_phase(p[i][0],
+                                      2 * np.pi * p[i][1],
+                                      p[i][2], samples=int(samples), end_time=LENGTH / RATE)
+        # Append to the list
+        complex_list.append(complex_phase)
+        i = i + 1
+
+    (phaseA_pos, phaseB_pos, phaseC_pos,
+     phaseA_neg, phaseB_neg, phaseC_neg,
+     phaseZero) = cal_symm(complex_list[1],
+                           complex_list[0],
+                           complex_list[2])
+
+    return rms_list, THD_list, harmonics_list, max_list, min_list, brb_list, p, \
+           np.sqrt(np.dot(phaseA_neg.real, phaseA_neg.real) / phase.size), \
+           np.sqrt(np.dot(phaseA_pos.real, phaseA_pos.real) / phase.size), \
+           np.sqrt(np.dot(phaseZero.real, phaseZero.real) / phase.size)

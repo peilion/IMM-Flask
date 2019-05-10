@@ -1,12 +1,14 @@
 from flask import Flask
 import api
+from flasgger import Swagger, swag_from
 
 
 def create_app():
     """Application factory, used to create application
     """
     app = Flask(__name__)
-    app.config.from_object('config.py')
+    app.config.from_object('config')
+    swagger = Swagger(app)
     register_blueprints(app)
 
     return app

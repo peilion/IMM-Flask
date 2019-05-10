@@ -1,4 +1,3 @@
-
 from logging.config import fileConfig
 import sys
 import os
@@ -6,6 +5,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 # this is the Alembic Config object, which provides
@@ -20,8 +20,15 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from db_config import Base
+
+
+
+from migrations.base import Base
 target_metadata = Base.metadata
+from models.declarative_models import *
+from models.sharding_models import *
+
+# Do not optimize import in pycharm.
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
