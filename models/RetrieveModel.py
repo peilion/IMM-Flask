@@ -63,7 +63,7 @@ def get_motor_trend(id, args):
 
     fields = ''
     for item in args['feature'].split(','):
-        if item in ['rms', 'thd', 'max_current', 'min_current', 'harmonics', 'fbrb']:
+        if item in ['rms', 'thd', 'max_current', 'min_current']:
             fields = fields + 'f.u' + item + ',' + \
                      'f.v' + item + ',' + \
                      'f.w' + item + ','
@@ -81,3 +81,27 @@ def get_motor_trend(id, args):
     query.close()
     return result
     # result = conn.execute(s, :th = table_hash)
+
+
+def get_motor_warning(id, group_by_motor, limit=10):
+    assert group_by_motor * id == False
+    if group_by_motor:
+        s = text('SELECT motor_id,m.name,COUNT(*) '
+                 'from warninglog '
+                 'join motor m on warninglog.motor_id = m.id '
+                 'group by motor_id')
+    elif id is not None:
+        s = text('SELECT *,m.name '
+                 'FROM warninglog '
+                 'join motor m on warninglog.motor_id = m.id '
+                 'where motor_id = {}'.format(id))
+    elif id is None:
+        s = text('SELECT *,m.name '
+                 'FROM warninglog '
+                 'join motor m on warninglog.motor_id = m.id '
+                 'limit {}'.format(limit))
+    conn = engine.connect()
+    query = conn.execute(s)
+    result = query.fetchall()
+    query.close()
+    return result

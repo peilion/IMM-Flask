@@ -123,8 +123,8 @@ class Stator(Asset, Base):
 class WarningLog(Base):
     __tablename__ = 'warninglog'
 
-    SEVERITIES = [(0, 'Attention'),
-                  (1, 'Serious'),
+    SEVERITIES = [('0', 'Attention'),
+                  ('1', 'Serious'),
                   ]
     id = Column(Integer, primary_key=True)
     cr_time = Column(DateTime, nullable=True, default=func.now())

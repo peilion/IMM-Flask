@@ -2,6 +2,9 @@ from flask_restful import reqparse, Resource
 from serializer.data_serializer import TrendSchema
 from models import RetrieveModel
 from flask import jsonify
+from migrations.base import Session
+from models.declarative_models import WarningLog
+from sqlalchemy.orm import joinedload
 
 trend_parser = reqparse.RequestParser()
 trend_parser.add_argument(
@@ -37,23 +40,21 @@ class MotorTrend(Resource):
             required: true
             description: chose one or more of [rms, max_current, min_current, thd, imbalance,harmonics,fbrb,n_rms,p_rms,z_rms]
             type: array
-            enum: ['rms', 'max_current', 'min_current', 'thd', 'imbalance','harmonics','fbrb','n_rms','p_rms','z_rms']
+            enum: ['rms', 'max_current', 'min_current', 'thd', 'imbalance','n_rms','p_rms','z_rms']
 
           - in: query
             name: timeafter
             required: true
-            description: Start time
+            description: Start time, pattern:2016-01-01 00:00:00
             type: string
             formatter: date-time
             default: 2016-01-01 00:00:00
           - in: query
             name: timebefore
             required: true
-            description: End time
+            description: End time, pattern:2016-05-01 00:00:00
             type: string
             formatter: date-time
-            default: 2016-05-01 00:00:00
-
             """
         args = trend_parser.parse_args()
         result = RetrieveModel.get_motor_trend(id, args)
@@ -66,3 +67,16 @@ class MotorTrend(Resource):
                     dic.setdefault(key, []).append(value)
 
         return dic
+
+
+warning_parser = reqparse.RequestParser()
+warning_parser.add_argument(
+    'isgroup',
+    location='args', required=False, type=bool
+)
+
+
+class MotorWarning(RetrieveModel):
+    def get(self, id):
+        args = warning_parser.parse_args()
+

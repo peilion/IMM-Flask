@@ -10,5 +10,6 @@ __all__ = [
     'StatorDetail',
     'BearingDetail',
     'MotorList',
-    'MotorTrend'
+    'MotorTrend',
+    'MotorWarning'
 ]
