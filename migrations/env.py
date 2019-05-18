@@ -23,10 +23,9 @@ fileConfig(config.config_file_name)
 
 
 
-from migrations.base import Base
+from base.base import Base
 target_metadata = Base.metadata
-from models.declarative_models import *
-from models.sharding_models import *
+
 
 # Do not optimize import in pycharm.
 

@@ -1,10 +1,5 @@
 from flask_restful import reqparse, Resource
-from serializer.data_serializer import TrendSchema
 from models import RetrieveModel
-from flask import jsonify
-from migrations.base import Session
-from models.declarative_models import WarningLog
-from sqlalchemy.orm import joinedload
 
 trend_parser = reqparse.RequestParser()
 trend_parser.add_argument(

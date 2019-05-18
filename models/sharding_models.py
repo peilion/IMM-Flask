@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, BigInteger, SmallInteger, \
     ForeignKey, Float, DateTime, func, LargeBinary
 from sqlalchemy.orm import relationship
 from db_config import table_args, SHARDING_NUMBER
-from migrations.base import Base
+from base.base import Base
 
 
 class CurrentsPack(object):

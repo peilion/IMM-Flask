@@ -1,5 +1,5 @@
-from flask_restful import fields, marshal_with, reqparse, Resource
-from migrations.base import Session
+from flask_restful import reqparse, Resource
+from base.base import Session
 from models.declarative_models import Motor, Rotor, Stator, Bearing
 from sqlalchemy.orm import joinedload
 from serializer.asset_serializer import EquipGroupSchema, MotorSchema, RotorSchema, StatorSchema, BearingSchema, \
