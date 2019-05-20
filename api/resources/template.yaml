@@ -1,0 +1,22 @@
+swagger: "2.0"
+info:
+  title: Indocution Motor Monitoring - Backend API
+  description: Providing motor information, signals, features and ML recognition result.
+  contact:
+    name: Peilun Fu
+    url: https://github.com/fplllll/IMM-Flask
+    email: peilun.fu117@gmail.com
+  version: 1.0.0
+host: localhost:5000
+schemes:
+  - http
+  - https
+tags:
+  - name: Equip Group
+    description: Equip Group Information
+  - name: Motor
+    description: Motor Information
+  - name: Warning
+    description: Warning Logs of Motor
+  - name: Auth
+    description: Operations about user

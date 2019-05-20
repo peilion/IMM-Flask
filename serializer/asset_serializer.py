@@ -42,7 +42,7 @@ class MotorSchema(AssetSchema):
     turn_number = fields.Integer()
     rated_voltage = fields.Float()
     rated_speed = fields.Float()
-
+    admin = fields.String()
 
 class EquipGroupSchema(AssetSchema):
     rotors = fields.Nested(AssetSchema, many=True)

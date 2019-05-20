@@ -1,10 +1,12 @@
 from flask_restful import reqparse, Resource
-from base.base import Session
-from models.declarative_models import Motor, Rotor, Stator, Bearing
+from base.basic_base import Session
+from models.declarative_models import Motor, Rotor, Stator, Bearing, User
 from sqlalchemy.orm import joinedload
 from serializer.asset_serializer import EquipGroupSchema, MotorSchema, RotorSchema, StatorSchema, BearingSchema, \
     MotorStatuStatisticSchema
-from models import RetrieveModel
+# from base.automap_base import Base
+from models import retrieve_model
+from flasgger import swag_from
 
 motor_parser = reqparse.RequestParser()
 motor_parser.add_argument(
@@ -14,21 +16,8 @@ motor_parser.add_argument(
 
 
 class EquipGroupDetail(Resource):
-
+    @swag_from('docs/equip_group/get.yaml')
     def get(self, id):
-        """
-        Single Equipment group info
-        ---
-        parameters:
-          - in: path
-            name: id
-            required: true
-            description: The ID of the Equip gourp,try 1~3
-            type: string
-        responses:
-          200:
-            description: A brief description of the interested motor
-         """
         motor = Session.query(Motor). \
             options(joinedload(Motor.rotors),
                     joinedload(Motor.stators),
@@ -39,15 +28,8 @@ class EquipGroupDetail(Resource):
 
 
 class EquipGroupList(Resource):
-
+    @swag_from('docs/equip_group/list.yaml')
     def get(self):
-        """
-        Equipment groups info List
-        ---
-        responses:
-          200:
-            description: A brief description of the interested equip group
-         """
         motors = Session.query(Motor). \
             options(joinedload(Motor.rotors),
                     joinedload(Motor.stators),
@@ -57,40 +39,24 @@ class EquipGroupList(Resource):
 
 
 class MotorDetail(Resource):
+    @swag_from('docs/motor/get.yaml')
     def get(self, id):
-        """
-        Single Equipment group info
-        ---
-        parameters:
-          - in: path
-            name: id
-            required: true
-            description: The ID of the motor,try 1~3
-            type: string
-         """
         motor = Session.query(Motor).filter_by(id=id).one()
         return MotorSchema().dump(motor)
 
 
 class MotorList(Resource):
+    @swag_from('docs/motor/list.yaml')
     def get(self):
-        """
-        Motor info list
-        ---
-        parameters:
-          - in: query
-            name: filter_by
-            required: false
-            description: field used for filter motor
-            type: string
-        """
         args = motor_parser.parse_args()
         if args['filter_by'] == 'statu':
-            data = RetrieveModel.get_statu_statistic()
+            data = retrieve_model.get_statu_statistic()
             return MotorStatuStatisticSchema().dump(data, many=False)
         else:
-            motors = Session.query(Motor).all()
-            return MotorSchema().dump(motors)
+            motors = Session.query(Motor.name, Motor.sn, Motor.statu, Motor.lr_time, Motor.id, Motor.health_indicator,
+                                   User.name.label('admin')). \
+                join(User).all()
+            return MotorSchema().dump(motors, many=True)
 
 
 class RotorDetail(Resource):
@@ -139,5 +105,3 @@ class BearingDetail(Resource):
         """
         bearings = Session.query(Bearing).filter_by(motor_id=id).all()
         return BearingSchema().dump(bearings, many=True)
-
-

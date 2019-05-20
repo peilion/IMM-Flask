@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, pprint
 import numpy as np
+from models.declarative_models import WarningLog, Motor
 
 
 class Blob(fields.Field):
@@ -39,3 +40,13 @@ class TrendSchema(Schema):
     @staticmethod
     def statu_mapper(obj):
         return obj.statu.value
+
+class WarningSchema(Schema):
+    name = fields.String()
+    description = fields.String()
+    cr_time = fields.DateTime()
+    severity = fields.Method("severity_mapper")
+
+    @staticmethod
+    def severity_mapper(obj):
+        return obj.severity.value

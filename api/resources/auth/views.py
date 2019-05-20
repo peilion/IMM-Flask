@@ -1,4 +1,5 @@
 from flask_restful import Resource
+from flasgger import swag_from
 
 
 class UserResource(Resource):
@@ -12,15 +13,10 @@ class UserResource(Resource):
         }
     }
 
+    @swag_from('get.yaml')
     def get(self):
-        """
-        User token api
-        ---
-        responses:
-          200:
-            description: A token contains user roles,avatar,name and introduction etc. Since the api hasn't been finished, it returns same data for all requests
-         """
         return self.userMap['admin']
 
+    @swag_from('get.yaml')
     def post(self):
         return self.userMap['admin']

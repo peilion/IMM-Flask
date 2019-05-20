@@ -1,0 +1,20 @@
+swagger: "2.0"
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+tags:
+  - Auth
+parameters:
+  - name: id
+    in: path
+    required: false
+    type: integer
+    default: 1
+responses:
+  200:
+    description: "successful operation"
+  400:
+    description: "Bad request"

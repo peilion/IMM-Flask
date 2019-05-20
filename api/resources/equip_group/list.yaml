@@ -1,0 +1,18 @@
+swagger: "2.0"
+tags:
+  - Equip Group
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+parameters:
+  - in: query
+    name: placeHolder
+    description: A place holder to prevent bug brought by flasgger when parameters.
+    type: string
+    default: placeHolder
+responses:
+  200:
+    description: A brief description of the interested equip group

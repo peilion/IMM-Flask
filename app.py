@@ -1,6 +1,8 @@
 from flask import Flask
 import api
 from flasgger import Swagger, swag_from
+from flask_cors import CORS
+import os
 
 
 def create_app():
@@ -8,8 +10,10 @@ def create_app():
     """
     app = Flask(__name__)
     app.config.from_object('config')
-    swagger = Swagger(app)
+    swagger = Swagger(app, template_file=os.path.join(os.getcwd(), 'api', 'resources', 'docs', 'template.yaml'),
+                      parse=True)
     register_blueprints(app)
+    CORS(app, supports_credentials=True)
 
     return app
 

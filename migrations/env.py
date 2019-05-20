@@ -23,7 +23,7 @@ fileConfig(config.config_file_name)
 
 
 
-from base.base import Base
+from base.basic_base import Base
 target_metadata = Base.metadata
 
 

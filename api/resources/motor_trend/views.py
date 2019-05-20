@@ -1,9 +1,6 @@
 from flask_restful import reqparse, Resource
+
 from models import retrieve_model
-from models.declarative_models import WarningLog, Motor
-from base.basic_base import Session
-from sqlalchemy import func
-from serializer.data_serializer import WarningSchema
 
 trend_parser = reqparse.RequestParser()
 trend_parser.add_argument('timeafter', location='args', required=False, type=str)
@@ -56,40 +53,3 @@ class MotorTrend(Resource):
                 else:
                     dic.setdefault(key, []).append(value)
         return dic
-
-
-warning_parser = reqparse.RequestParser()
-warning_parser.add_argument('isgroup', location='args', required=False, type=bool)
-
-
-class MotorWarning(Resource):
-    def get(self):
-        """
-        Motor Warning
-        ---
-        parameters:
-          - in: query
-            name: id
-            required: false
-            description: The ID of the related motor,try 1~3
-            type: int
-            default: 2
-          - in: query
-            name: isgroup
-            required: false
-            description: chose one or more of [rms, max_current, min_current, thd, imbalance,harmonics,fbrb,n_rms,p_rms,z_rms]
-            type: boolean
-
-        """
-        args = warning_parser.parse_args()
-        if args['isgroup']:
-            data = Session.query(Motor.name, func.count(WarningLog.motor_id)). \
-                join(Motor). \
-                group_by(Motor.name).all()
-            return data
-        else:
-            data = Session.query(Motor.name, WarningLog.cr_time, WarningLog.description, WarningLog.severity). \
-                join(Motor). \
-                order_by(WarningLog.cr_time.desc()). \
-                slice(0, 7).all()
-            return WarningSchema().dump(data, many=True).data

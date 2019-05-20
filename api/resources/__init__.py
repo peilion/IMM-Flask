@@ -1,4 +1,4 @@
-from api.resources.auth import UserResource
+from api.resources.auth.views import UserResource
 from api.resources.motor import *
 from api.resources.data import *
 __all__ = [

@@ -1,0 +1,18 @@
+swagger: "2.0"
+tags:
+  - Equip Group
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+parameters:
+  - in: path
+    name: id
+    required: true
+    description: The ID of the Equip gourp,try 1~3
+    type: string
+responses:
+  200:
+    description: A brief description of the interested motor
