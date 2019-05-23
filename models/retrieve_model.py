@@ -1,48 +1,8 @@
 from sqlalchemy import Table, MetaData
 from db_config import engine, SHARDING_NUMBER
-from sqlalchemy.sql import select, join
 from sqlalchemy import text
 
 metadata = MetaData()
-
-
-class Motor(object):
-    model = Table('motor', metadata, autoload=True, autoload_with=engine)
-
-    def __init__(self, id=None):
-        self.id = id
-        self.shard_hash = id % SHARDING_NUMBER
-
-    def query(self, s):
-        conn = engine.connect()
-        result = conn.execute(s)
-        data = result.fetchall()
-        result.close()
-        return data
-
-    def retrieve(self):
-        s = select([self.model, Bearing.model]). \
-            select_from(self.model.
-                        join(Bearing.model,
-                             Bearing.model.c.motor_id == self.model.c.id)). \
-            where(self.model.c.id == self.id)
-        data = self.query(s)
-        return data
-
-    def list(self):
-        s = select([self.model, Bearing.model]).select_from(self.model.
-                                                            join(Bearing.model,
-                                                                 Bearing.model.c.motor_id == self.model.c.id))
-        data = self.query(s)
-        return data
-
-
-class Rotor(object):
-    model = Table('rotor', metadata, autoload=True, autoload_with=engine)
-
-
-class Bearing(object):
-    model = Table('Bearing', metadata, autoload=True, autoload_with=engine)
 
 
 def get_table_hash(motor_id):
@@ -56,6 +16,31 @@ def get_statu_statistic():
     data = result.fetchall()
     result.close()
     return {row.values()[0]: row.values()[1] for row in data}
+
+
+def get_comp_statistic():
+    s = text(
+        'SELECT m.id, m.name, '
+        '( SELECT COUNT( * ) FROM bearing b WHERE b.motor_id = m.id ) as nb, '
+        '( SELECT COUNT( * ) FROM rotor r WHERE r.motor_id = m.id ) as nr, '
+        '( SELECT COUNT( * ) FROM stator s WHERE s.motor_id = m.id ) as ns '
+        'FROM motor m GROUP BY m.id')
+    conn = engine.connect()
+    result = conn.execute(s)
+    data = result.fetchall()
+    result.close()
+    return [{key: value for key, value in zip(row.keys(), row.values())} for row in data]
+
+
+def get_warning_calendar():
+    s = text('SELECT date(warninglog.cr_time) as date ,count(*) as num '
+             'from warninglog '
+             'GROUP BY date(warninglog.cr_time)')
+    conn = engine.connect()
+    result = conn.execute(s)
+    data = result.fetchall()
+    result.close()
+    return [[row.values()[0].strftime('%Y-%m-%d'), row.values()[1]] for row in data]
 
 
 def get_motor_trend(id, args):
@@ -83,25 +68,18 @@ def get_motor_trend(id, args):
     # result = conn.execute(s, :th = table_hash)
 
 
-def get_motor_warning(id, group_by_motor, limit=10):
-    assert group_by_motor * id == False
-    if group_by_motor:
-        s = text('SELECT motor_id,m.name,COUNT(*) '
-                 'from warninglog '
-                 'join motor m on warninglog.motor_id = m.id '
-                 'group by motor_id')
-    elif id is not None:
-        s = text('SELECT *,m.name '
-                 'FROM warninglog '
-                 'join motor m on warninglog.motor_id = m.id '
-                 'where motor_id = {}'.format(id))
-    elif id is None:
-        s = text('SELECT *,m.name '
-                 'FROM warninglog '
-                 'join motor m on warninglog.motor_id = m.id '
-                 'limit {}'.format(limit))
-    conn = engine.connect()
-    query = conn.execute(s)
-    result = query.fetchall()
-    query.close()
-    return result
+def get_motor_phase(id, args):
+    table_hash = get_table_hash(id)
+    fields = ''
+    for phase in args['phase']:
+        fields = fields + '{0}.wave as {0},'.format(phase)
+
+    s = text('SELECT pack.id as id from currentspack_0 as pack '
+             'INNER JOIN uphase_0 u on pack.id = u.pack_id '
+             'INNER JOIN vphase_0 v on pack.id = v.pack_id '
+             'INNER JOIN wphase_0 w on pack.id = w.pack_id '
+             'WHERE pack.motor_id=:id '
+             'ORDER BY pack.id desc '
+             'LIMIT 1'
+             )
+

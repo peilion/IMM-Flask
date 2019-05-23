@@ -1,0 +1,31 @@
+swagger: "2.0"
+tags:
+  - Motor Pack
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+parameters:
+  - in: path
+    name: id
+    required: true
+    description: The ID of the related motor,try 1~3
+    type: integer
+    default: 2
+  - in: query
+    name: timeafter
+    required: false
+    description: 起始时间，模式为：2016-01-01 00:00:00
+    type: string
+  - in: query
+    name: timebefore
+    required: false
+    description: 截止时间，模式为：2016-05-01 00:00:00
+    type: string
+responses:
+  200:
+    description: Success
+  400:
+    description: Bad query

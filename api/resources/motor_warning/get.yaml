@@ -1,0 +1,18 @@
+swagger: "2.0"
+tags:
+  - Warning
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+parameters:
+  - in: path
+    name: id
+    description: Motor id
+    required: true
+    type: integer
+responses:
+  200:
+    description: Success

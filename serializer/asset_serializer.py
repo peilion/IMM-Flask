@@ -1,6 +1,10 @@
 from marshmallow import Schema, fields, pprint
 
 
+class UserSchema(Schema):
+    name = fields.String()
+
+
 class AssetSchema(Schema):
     id = fields.Integer()
     statu = fields.Method("statu_mapper")
@@ -9,6 +13,7 @@ class AssetSchema(Schema):
     health_indicator = fields.Float()
     lr_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
     memo = fields.Str()
+    admin = fields.Nested(UserSchema)
 
     @staticmethod
     def statu_mapper(obj):
@@ -44,6 +49,7 @@ class MotorSchema(AssetSchema):
     rated_speed = fields.Float()
     admin = fields.String()
 
+
 class EquipGroupSchema(AssetSchema):
     rotors = fields.Nested(AssetSchema, many=True)
     stators = fields.Nested(AssetSchema, many=True)
@@ -58,3 +64,10 @@ class MotorStatuStatisticSchema(Schema):
     good = fields.Integer(attribute='1', default=0)
     moderate = fields.Integer(attribute='2', default=0)
     poor = fields.Integer(attribute='3', default=0)
+
+
+class MotorCompStatisticSchema(Schema):
+    name = fields.String()
+    bearnings = fields.Integer(attribute='nb')
+    stators = fields.Integer(attribute='ns')
+    rotors = fields.Integer(attribute='nr')

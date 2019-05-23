@@ -13,8 +13,9 @@ table_args = {
     'mysql_engine': 'InnoDB',
     'mysql_charset': 'utf8'
 }
-SHARDING_NUMBER = 3
 engine = create_engine('mysql://root:8315814@localhost/flask-imm', convert_unicode=True)
 
+admin_engine = create_engine('mysql://root:8315814@localhost/information_schema', convert_unicode=True)
 # Base.metadata.drop_all(bind=engine)
 # Base.metadata.create_all(bind=engine)
+SHARDING_NUMBER = 3

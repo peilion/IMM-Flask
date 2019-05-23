@@ -9,4 +9,4 @@ class StatorDetail(Resource):
     @swag_from('get.yaml')
     def get(self, id):
         stators = Session.query(Stator).filter_by(motor_id=id).all()
-        return StatorSchema().dump(stators)
+        return StatorSchema().dump(stators, many=True)

@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, pprint
 import numpy as np
-from models.declarative_models import WarningLog, Motor
+from models.declarative_models import WarningLog,Motor
+from json import dump
 
 
 class Blob(fields.Field):
@@ -9,11 +10,10 @@ class Blob(fields.Field):
     """
 
     def _serialize(self, value, attr, obj, **kwargs):
-        return np.fromstring(value, dtype=np.float32)
+        return [round(float(item), 3) for item in np.fromstring(value, dtype=np.float32)]
 
 
-class TrendSchema(Schema):
-    time = fields.Method('marsh_with_datetime_list')
+class FeatureSchema(Schema):
     urms = fields.Float()
     vrms = fields.Float()
     wrms = fields.Float()
@@ -36,10 +36,8 @@ class TrendSchema(Schema):
     p_rms = fields.Float()
     z_rms = fields.Float()
     imbalance = fields.Float()
+    frequency = fields.Float()
 
-    @staticmethod
-    def statu_mapper(obj):
-        return obj.statu.value
 
 class WarningSchema(Schema):
     name = fields.String()
@@ -50,3 +48,16 @@ class WarningSchema(Schema):
     @staticmethod
     def severity_mapper(obj):
         return obj.severity.value
+
+
+class PhaseSchema(Schema):
+    frequency = fields.Float()
+    amplitude = fields.Float()
+    initial_phase = fields.Float()
+    wave = Blob(dump_only=True)
+
+
+class PackSchema(Schema):
+    time = fields.DateTime()
+    rpm = fields.Integer()
+    id = fields.Integer()

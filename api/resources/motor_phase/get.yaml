@@ -1,0 +1,30 @@
+swagger: "2.0"
+tags:
+  - Motor Phase
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+parameters:
+  - in: path
+    name: id
+    required: true
+    description: The ID of the related motor,try 1~3
+    type: integer
+    default: 2
+  - in: query
+    name: pack_id
+    required: false
+    description: The ID of the signal pack
+    type: integer
+  - in: query
+    name: newest
+    required: false
+    type: boolean
+responses:
+  200:
+    description: Success
+  400:
+    description: Bad query

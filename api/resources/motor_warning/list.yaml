@@ -1,6 +1,6 @@
 swagger: "2.0"
 tags:
-  - Motor
+  - Warning
 consumes:
 - application/json
 - application/xml
@@ -9,13 +9,16 @@ produces:
 - application/json
 parameters:
   - in: query
+    name: limit
+    required: false
+    type: integer
+  - in: query
     name: group_by
     required: false
-    description: field used for filter motor
     type: string
     enum:
-    - statu
-    - comps
+     - motor
+     - date
 responses:
   200:
-    description: Statistic of the motors.
+    description: Success

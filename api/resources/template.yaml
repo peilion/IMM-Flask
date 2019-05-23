@@ -16,7 +16,13 @@ tags:
     description: Equip Group Information
   - name: Motor
     description: Motor Information
+  - name: Motor Feature
+    description: Motor Feature Information
+  - name: Motor Phase
+    description: Motor Phase Information
   - name: Warning
     description: Warning Logs of Motor
   - name: Auth
     description: Operations about user
+  - name: Server
+    description: Information about the web server

@@ -1,0 +1,12 @@
+swagger: "2.0"
+tags:
+  - Server
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+responses:
+  200:
+    description: A brief description of the interested motor

@@ -27,12 +27,12 @@ class CurrentsPack(object):
                 sampling_rate=Column(Integer, nullable=True),
                 rpm=Column(SmallInteger, default=3000),
 
-                motor=relationship('Motor', back_populates='packs'),
-                uphase=relationship('uphase_%d' % table_index, back_populates='pack', uselist=False),
-                vphase=relationship('vphase_%d' % table_index, back_populates='pack', uselist=False),
-                wphase=relationship('wphase_%d' % table_index, back_populates='pack', uselist=False),
-                feature=relationship('feature_%d' % table_index, back_populates='pack', uselist=False),
-                symcomponent=relationship('symcomponent_%d' % table_index, back_populates='pack', uselist=False),
+                # motor=relationship('Motor', back_populates='packs'),
+                # uphase=relationship('uphase_%d' % table_index, back_populates='pack', uselist=False),
+                # vphase=relationship('vphase_%d' % table_index, back_populates='pack', uselist=False),
+                # wphase=relationship('wphase_%d' % table_index, back_populates='pack', uselist=False),
+                # feature=relationship('feature_%d' % table_index, back_populates='pack', uselist=False),
+                # symcomponent=relationship('symcomponent_%d' % table_index, back_populates='pack', uselist=False),
 
                 __table_args__=table_args
             ))
@@ -62,7 +62,7 @@ class Uphase(object):
                 initial_phase=Column(Float, default=0),
                 pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index)),unique=True),
 
-                pack=relationship('currentspack_%d' % table_index, back_populates=cls.base_class_name),
+                # pack=relationship('currentspack_%d' % table_index, back_populates=cls.base_class_name),
 
                 __table_args__=table_args
             ))
@@ -124,7 +124,7 @@ class Feature(object):
 
                 pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index)),unique=True),
 
-                pack=relationship('currentspack_%d' % table_index, back_populates=cls.base_class_name),
+                # pack=relationship('currentspack_%d' % table_index, back_populates=cls.base_class_name),
 
                 __table_args__=table_args
             ))

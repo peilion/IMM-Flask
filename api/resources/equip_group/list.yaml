@@ -9,10 +9,10 @@ produces:
 - application/json
 parameters:
   - in: query
-    name: placeHolder
-    description: A place holder to prevent bug brought by flasgger when parameters.
-    type: string
-    default: placeHolder
+    name: iftree
+    description: Determine whether to return the tree map of equipment structure.
+    type: boolean
+    default: false
 responses:
   200:
     description: A brief description of the interested equip group
