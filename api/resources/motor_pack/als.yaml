@@ -1,0 +1,26 @@
+swagger: "2.0"
+tags:
+  - Motor Pack
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+parameters:
+  - in: path
+    name: id
+    required: true
+    description: The ID of the related motor,try 1~3
+    type: integer
+    default: 2
+  - in: path
+    name: pack_id
+    required: true
+    type: integer
+    default: 906
+responses:
+  200:
+    description: Success
+  400:
+    description: Bad query

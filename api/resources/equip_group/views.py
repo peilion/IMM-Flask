@@ -29,18 +29,18 @@ class EquipGroupList(Resource):
         args = equipgroup_parser.parse_args()
         if args['iftree']:
             treejson = {'name': 'Induction Motor Monitoring Platform', 'children': []}
-            for motor in Session.query(Motor.name).all():
+            for motor in Session.query(Motor.id, Motor.name).all():
                 treejson['children'].append({'name': motor.name,
                                              'children': []})
-                for bearing in Session.query(Bearing.name).all():
+                for bearing in Session.query(Bearing.name).filter_by(motor_id=motor.id).all():
                     treejson['children'][-1]['children'].append({'name': bearing.name})
-                for rotor in Session.query(Rotor.name).all():
+                for rotor in Session.query(Rotor.name).filter_by(motor_id=motor.id).all():
                     treejson['children'][-1]['children'].append({'name': rotor.name})
-                for stator in Session.query(Stator.name).all():
+                for stator in Session.query(Stator.name).filter_by(motor_id=motor.id).all():
                     treejson['children'][-1]['children'].append({'name': stator.name})
             return treejson, 200
         else:
-            motors = Session.\
+            motors = Session. \
                 query(Motor). \
                 options(joinedload(Motor.rotors),
                         joinedload(Motor.stators),

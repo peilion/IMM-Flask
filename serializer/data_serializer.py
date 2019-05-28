@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, pprint
 import numpy as np
-from models.declarative_models import WarningLog,Motor
+from models.declarative_models import WarningLog, Motor
 from json import dump
 
 
@@ -11,6 +11,16 @@ class Blob(fields.Field):
 
     def _serialize(self, value, attr, obj, **kwargs):
         return [round(float(item), 3) for item in np.fromstring(value, dtype=np.float32)]
+
+    @staticmethod
+    def myserialize(value):
+        return [round(float(item), 3) for item in np.fromstring(value, dtype=np.float32)]
+
+
+class Array(fields.Field):
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        return [round(float(item), 3) for item in value]
 
 
 class FeatureSchema(Schema):
@@ -37,6 +47,9 @@ class FeatureSchema(Schema):
     z_rms = fields.Float()
     imbalance = fields.Float()
     frequency = fields.Float()
+    ufft = Array(dump_only=True)
+    vfft = Array(dump_only=True)
+    wfft = Array(dump_only=True)
 
 
 class WarningSchema(Schema):

@@ -6,8 +6,9 @@ from serializer.asset_serializer import MotorSchema, MotorStatuStatisticSchema, 
 from models import retrieve_model
 
 motor_parser = reqparse.RequestParser()
-motor_parser.add_argument('group_by', location='args', required=False, type=str )
+motor_parser.add_argument('group_by', location='args', required=False, type=str)
 motor_parser.add_argument('comp_stat', location='args', required=False, type=inputs.boolean)
+motor_parser.add_argument('lr_time', location='args', required=False, type=str)
 
 
 class MotorDetail(Resource):
@@ -16,6 +17,13 @@ class MotorDetail(Resource):
         motor = Session.query(Motor.id, Motor.name, Motor.health_indicator, Motor.lr_time, Motor.sn, Motor.memo,
                               Motor.statu).filter_by(id=id).one()
         return MotorSchema().dump(motor)
+
+    @swag_from('put.yaml')
+    def put(self, id):
+        args = motor_parser.parse_args()
+        Session.query(Motor).filter(Motor.id == id).update({'lr_time': args['lr_time']})
+        Session.commit()
+        return {'message': 'Success'}
 
 
 class MotorList(Resource):
