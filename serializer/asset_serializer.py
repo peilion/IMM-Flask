@@ -1,6 +1,15 @@
 from marshmallow import Schema, fields, pprint
 
 
+class Choice(fields.Field):
+    """
+    Read only blob field
+    """
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        return int(value.code)
+
+
 class UserSchema(Schema):
     name = fields.String()
 
@@ -14,6 +23,7 @@ class AssetSchema(Schema):
     lr_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
     memo = fields.Str()
     admin = fields.Nested(UserSchema)
+    equip_type = Choice(dump_only=True)
 
     @staticmethod
     def statu_mapper(obj):

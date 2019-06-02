@@ -18,10 +18,14 @@ class MotorUphaseSignal(Resource):
         phase = self.model_factory.model(motor_id=id)
         args = phase_parser.parse_args()
         if args['newest'] == True:
-            data = Session.query(phase.wave).order_by(phase.id.desc()).first()
+            session = Session()
+            data = session.query(phase.wave).order_by(phase.id.desc()).first()
+            session.close()
             return PhaseSchema(only=('wave',)).dump(data)
         elif args['pack_id']:
-            data = Session.query(phase.wave).filter_by(pack_id=args['pack_id']).first()
+            session = Session()
+            data = session.query(phase.wave).filter_by(pack_id=args['pack_id']).first()
+            session.close()
             return PhaseSchema(only=('wave',)).dump(data)
         else:
             return 400
@@ -35,16 +39,20 @@ class MotorUphaseParas(Resource):
         phase = self.model_factory.model(motor_id=id)
         args = phase_parser.parse_args()
         if args['newest'] == True:
-            data = Session. \
+            session = Session()
+            data = session. \
                 query(phase.frequency, phase.amplitude, phase.initial_phase). \
                 order_by(phase.id.desc()). \
                 first()
+            session.close()
             return PhaseSchema(only=('frequency', 'amplitude', 'initial_phase',)).dump(data)
         elif args['pack_id']:
-            data = Session. \
+            session = Session()
+            data = session. \
                 query(phase.frequency, phase.amplitude, phase.initial_phase). \
                 filter_by(pack_id=args['pack_id']). \
                 first()
+            session.close()
             return PhaseSchema(only=('frequency', 'amplitude', 'initial_phase',)).dump(data)
         else:
             return 400
@@ -64,3 +72,4 @@ class MotorWphaseSignal(MotorUphaseSignal):
 
 class MotorWphaseParas(MotorUphaseParas):
     model_factory = Wphase
+

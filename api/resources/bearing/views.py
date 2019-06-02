@@ -3,10 +3,27 @@ from base.basic_base import Session
 from models.declarative_models import Bearing
 from serializer.asset_serializer import BearingSchema
 from flasgger import swag_from
+from flask_restful import reqparse
+from fields.motor_fields import localtime
+parser = reqparse.RequestParser()
+parser.add_argument('lr_time', location='args', required=False, type=localtime)
 
 
 class BearingDetail(Resource):
     @swag_from('get.yaml')
     def get(self, id):
-        bearings = Session.query(Bearing).filter_by(motor_id=id).all()
+        session = Session()
+        bearings = session.query(Bearing).filter_by(motor_id=id).all()
+        session.close()
+
         return BearingSchema().dump(bearings, many=True)
+
+    @swag_from('put.yaml')
+    def patch(self, id):
+        args = parser.parse_args()
+        session = Session()
+        session.query(Bearing).filter(Bearing.id == id).update({'lr_time': args['lr_time']})
+        Session.commit()
+        session.close()
+
+        return {'message': 'Success'}

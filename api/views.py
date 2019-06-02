@@ -1,9 +1,10 @@
-from flask import Blueprint
+from flask import Blueprint,jsonify
 from flask_restful import Api
+
 from api.resources import UserResource, EquipGroupList, EquipGroupDetail, MotorDetail, RotorDetail, StatorDetail, \
     BearingDetail, MotorList, MotorFeature, MotorWarningList, MotorWarning, ServerStatu, MotorWphaseSignal, \
     MotorWphaseParas, MotorVphaseSignal, MotorVphaseParas, MotorUphaseSignal, MotorUphaseParas, MotorPackList, \
-    MotorPackDetail, MotorPackDQAnalysis, MotorPackHarmonic
+    MotorPackDetail, MotorPackDQAnalysis, MotorPackHarmonic, MotorPackEnvelope
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(blueprint)
@@ -33,17 +34,51 @@ api.add_resource(MotorPackDetail, '/motor/<int:id>/pack/')
 
 api.add_resource(MotorPackDQAnalysis, '/motor/<int:id>/pack/<int:pack_id>/dq/')
 api.add_resource(MotorPackHarmonic, '/motor/<int:id>/pack/<int:pack_id>/harmonics/')
+api.add_resource(MotorPackEnvelope, '/motor/<int:id>/pack/<int:pack_id>/envelope/')
 
-# @blueprint.route('/register')
-# def hello_world():
-#     treejson = {'name': 'Induction Motor Monitoring Platform', 'children': []}
-#     for motor in Session.query(Motor.id, Motor.name).all():
-#         treejson['children'].append({'name': motor.name,
-#                                      'children': []})
-#         for bearing in Session.query(Bearing.name).filter_by(motor_id=motor.id).all():
-#             treejson['children'][-1]['children'].append({'name': bearing.name})
-#         for rotor in Session.query(Rotor.name).filter_by(motor_id=motor.id).all():
-#             treejson['children'][-1]['children'].append({'name': rotor.name})
-#         for stator in Session.query(Stator.name).filter_by(motor_id=motor.id).all():
-#             treejson['children'][-1]['children'].append({'name': stator.name})
-#     return jsonify(treejson)
+
+
+
+# @blueprint.route('/motor/<int:id>/pack/')
+# from flask.json import jsonify
+# from processing.signals import dq0_transform, threephase_deserialize, fftransform
+# from models.sharding_models import CurrentsPack, Uphase, Vphase, Wphase, Feature
+# from models.declarative_models import Motor
+# from base.basic_base import Session
+# from serializer.data_serializer import PackSchema, FeatureSchema, EnvelopeSchema
+# import numpy as np
+# import json
+# def hello_world(id):
+#     pack = CurrentsPack.model(motor_id=id)
+#     uphase = Uphase.model(motor_id=id)
+#     vphase = Vphase.model(motor_id=id)
+#     wphase = Wphase.model(motor_id=id)
+#     import time
+#     x = time.time()
+#     session = Session()
+#     data = session. \
+#         query(pack.id, pack.time, pack.rpm, Motor.name, Motor.statu, Motor.sn,
+#               uphase.wave.label('usignal'), vphase.wave.label('vsignal'), wphase.wave.label('wsignal'),
+#               uphase.amplitude.label('uamp'), vphase.amplitude.label('vamp'), wphase.amplitude.label('wamp'),
+#               uphase.frequency.label('ufreq'), vphase.frequency.label('vfreq'), wphase.frequency.label('wfreq'),
+#               uphase.initial_phase.label('uip'), vphase.initial_phase.label('vip'),
+#               wphase.initial_phase.label('wip')). \
+#         join(Motor, Motor.id == pack.motor_id). \
+#         join(uphase, uphase.pack_id == pack.id). \
+#         join(vphase, vphase.pack_id == pack.id). \
+#         join(wphase, wphase.pack_id == pack.id). \
+#         order_by(pack.id.desc()). \
+#         first()
+#     session.close()
+#     data = data._asdict()
+#     data['usignal'] = np.fromstring(data['usignal'], dtype=np.float32)
+#     data['vsignal'] = np.fromstring(data['vsignal'], dtype=np.float32)
+#     data['wsignal'] = np.fromstring(data['wsignal'], dtype=np.float32)
+#
+#     data['ufft'] = np.around(fftransform(data['usignal']), decimals=3)
+#     data['vfft'] = np.around(fftransform(data['vsignal']), decimals=3)
+#     data['wfft'] = np.around(fftransform(data['wsignal']), decimals=3)
+#     PackSchema().dump(data)
+#     x = time.time() - x
+#     return json.dumps(PackSchema().dump(data).data)
+

@@ -14,12 +14,14 @@ equipgroup_parser.add_argument('iftree', location='args', required=False,
 class EquipGroupDetail(Resource):
     @swag_from('get.yaml')
     def get(self, id):
-        motor = Session.query(Motor). \
+        session = Session()
+        motor = session.query(Motor). \
             options(joinedload(Motor.rotors),
                     joinedload(Motor.stators),
                     joinedload(Motor.bearings)). \
             filter_by(id=id). \
             one()
+        session.close()
         return EquipGroupSchema().dump(motor)[0]
 
 
@@ -27,23 +29,28 @@ class EquipGroupList(Resource):
     @swag_from('list.yaml')
     def get(self):
         args = equipgroup_parser.parse_args()
+        session = Session()
         if args['iftree']:
             treejson = {'name': 'Induction Motor Monitoring Platform', 'children': []}
-            for motor in Session.query(Motor.id, Motor.name).all():
+            for motor in session.query(Motor.id, Motor.name).all():
                 treejson['children'].append({'name': motor.name,
                                              'children': []})
-                for bearing in Session.query(Bearing.name).filter_by(motor_id=motor.id).all():
+                for bearing in session.query(Bearing.name).filter_by(motor_id=motor.id).all():
                     treejson['children'][-1]['children'].append({'name': bearing.name})
-                for rotor in Session.query(Rotor.name).filter_by(motor_id=motor.id).all():
+                for rotor in session.query(Rotor.name).filter_by(motor_id=motor.id).all():
                     treejson['children'][-1]['children'].append({'name': rotor.name})
-                for stator in Session.query(Stator.name).filter_by(motor_id=motor.id).all():
+                for stator in session.query(Stator.name).filter_by(motor_id=motor.id).all():
                     treejson['children'][-1]['children'].append({'name': stator.name})
+            session.close()
             return treejson, 200
         else:
-            motors = Session. \
+            session = Session()
+            motors = session. \
                 query(Motor). \
                 options(joinedload(Motor.rotors),
                         joinedload(Motor.stators),
                         joinedload(Motor.bearings)). \
                 all()
-            return EquipGroupSchema().dump(motors, many=True)
+            data = EquipGroupSchema().dump(motors, many=True)
+            session.close()
+            return data

@@ -74,3 +74,37 @@ class PackSchema(Schema):
     time = fields.DateTime()
     rpm = fields.Integer()
     id = fields.Integer()
+    name = fields.String()
+    sn = fields.String()
+    statu = fields.Method("statu_mapper")
+    ufft = Array(dump_only=True)
+    vfft = Array(dump_only=True)
+    wfft = Array(dump_only=True)
+    usignal = Array(dump_only=True)
+    vsignal = Array(dump_only=True)
+    wsignal = Array(dump_only=True)
+    uamp = fields.Float()
+    vamp = fields.Float()
+    wamp = fields.Float()
+    ufreq = fields.Float()
+    vfreq = fields.Float()
+    wfreq = fields.Float()
+    uip = fields.Float()
+    vip = fields.Float()
+    wip = fields.Float()
+
+    @staticmethod
+    def statu_mapper(obj):
+        return obj['statu'].value
+
+
+class EnvelopeSchema(Schema):
+    ufft = Array(dump_only=True)
+    vfft = Array(dump_only=True)
+    wfft = Array(dump_only=True)
+    u = Array(dump_only=True)
+    v = Array(dump_only=True)
+    w = Array(dump_only=True)
+    uenvelope = Array(dump_only=True)
+    venvelope = Array(dump_only=True)
+    wenvelope = Array(dump_only=True)

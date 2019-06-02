@@ -9,7 +9,7 @@ from api.resources.motor_warning.views import MotorWarningList, MotorWarning
 from api.resources.server_statu.views import ServerStatu
 from api.resources.motor_phase.views import MotorUphaseParas, MotorUphaseSignal, MotorVphaseParas, MotorVphaseSignal, \
     MotorWphaseParas, MotorWphaseSignal
-from api.resources.motor_pack.views import MotorPackList, MotorPackDetail,MotorPackDQAnalysis,MotorPackHarmonic
+from api.resources.motor_pack.views import MotorPackList, MotorPackDetail,MotorPackDQAnalysis,MotorPackHarmonic,MotorPackEnvelope
 
 __all__ = [
     'UserResource',
@@ -24,5 +24,5 @@ __all__ = [
     'ServerStatu',
     'MotorUphaseParas', 'MotorUphaseSignal', 'MotorVphaseParas', 'MotorVphaseSignal', 'MotorWphaseParas',
     'MotorWphaseSignal',
-    'MotorPackList', 'MotorPackDetail','MotorPackDQAnalysis','MotorPackHarmonic'
+    'MotorPackList', 'MotorPackDetail','MotorPackDQAnalysis','MotorPackHarmonic','MotorPackEnvelope'
 ]

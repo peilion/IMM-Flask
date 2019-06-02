@@ -4,6 +4,8 @@ from models import retrieve_model
 from models.sharding_models import Feature, Uphase
 from base.basic_base import Session
 from serializer.data_serializer import FeatureSchema
+import time
+from urllib import parse
 
 trend_parser = reqparse.RequestParser()
 trend_parser.add_argument('timeafter', location='args', required=False, type=str)
@@ -19,6 +21,9 @@ class MotorFeature(Resource):
     def get(self, id):
         args = trend_parser.parse_args()
         if args['timeafter'] is not None or args['timebefore'] is not None:
+            args['timeafter'] = parse.unquote(args['timeafter'])
+            args['timebefore'] = parse.unquote(args['timebefore'])
+
             result = retrieve_model.get_motor_trend(id, args)
             dic = {}
             for row in result:
@@ -31,10 +36,12 @@ class MotorFeature(Resource):
         elif args['newest'] is True:
             feature = Feature.model(motor_id=id)
             uphase = Uphase.model(motor_id=id)
-            data = Session. \
+            session = Session()
+            data = session. \
                 query(feature.urms, feature.vrms, feature.wrms, feature.n_rms, feature.p_rms, uphase.frequency). \
                 join(uphase, feature.pack_id == uphase.pack_id). \
                 order_by(feature.id.desc()).first()
+            session.close()
             return FeatureSchema().dump(data).data
 
         else:
