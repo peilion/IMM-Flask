@@ -73,3 +73,23 @@ class MotorWphaseSignal(MotorUphaseSignal):
 class MotorWphaseParas(MotorUphaseParas):
     model_factory = Wphase
 
+
+class MotorThreephaseSignal(Resource):
+
+    @swag_from('get.yaml')
+    def get(self, id):
+        uphase = Uphase.model(motor_id=id)
+        vphase = Vphase.model(motor_id=id)
+        wphase = Wphase.model(motor_id=id)
+
+        args = phase_parser.parse_args()
+
+        session = Session()
+        data = \
+            session.query(uphase.wave.label('u'), vphase.wave.label('v'), wphase.wave.label('w')). \
+                join(vphase, vphase.pack_id == uphase.pack_id). \
+                join(wphase, wphase.pack_id == uphase.pack_id). \
+                filter_by(pack_id=args['pack_id']).first()
+        session.close()
+
+        return PhaseSchema(only=('u', 'v', 'w')).dump(data)

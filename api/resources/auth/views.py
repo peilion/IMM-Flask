@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flasgger import swag_from
-
+from extensions import cache
 
 class UserResource(Resource):
     userMap = {
@@ -13,6 +13,7 @@ class UserResource(Resource):
         }
     }
 
+    # @cache.cached(timeout=50, key_prefix='user_token')
     @swag_from('get.yaml')
     def get(self):
         return self.userMap['admin']

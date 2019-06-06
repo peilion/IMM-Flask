@@ -1,10 +1,11 @@
-from flask import Blueprint,jsonify
+from flask import Blueprint, jsonify
 from flask_restful import Api
 
 from api.resources import UserResource, EquipGroupList, EquipGroupDetail, MotorDetail, RotorDetail, StatorDetail, \
     BearingDetail, MotorList, MotorFeature, MotorWarningList, MotorWarning, ServerStatu, MotorWphaseSignal, \
     MotorWphaseParas, MotorVphaseSignal, MotorVphaseParas, MotorUphaseSignal, MotorUphaseParas, MotorPackList, \
-    MotorPackDetail, MotorPackDQAnalysis, MotorPackHarmonic, MotorPackEnvelope
+    MotorPackDetail, MotorPackDQAnalysis, MotorPackHarmonic, MotorPackEnvelope, BearingInfo, RotorInfo, StatorInfo, \
+    MotorPackSymAnalysis,MotorThreephaseSignal
 
 blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(blueprint)
@@ -13,9 +14,16 @@ api.add_resource(UserResource, '/login/', '/user/info/')
 api.add_resource(EquipGroupDetail, '/equipgroup/<string:id>/')
 api.add_resource(EquipGroupList, '/equipgroup/')
 api.add_resource(MotorDetail, '/motor/<string:id>/')
+
 api.add_resource(RotorDetail, '/motor/<string:id>/rotor/')
+api.add_resource(RotorInfo, '/rotor/<string:id>/')
+
 api.add_resource(StatorDetail, '/motor/<string:id>/stator/')
+api.add_resource(StatorInfo, '/stator/<string:id>/')
+
 api.add_resource(BearingDetail, '/motor/<string:id>/bearing/')
+api.add_resource(BearingInfo, '/bearing/<string:id>/')
+
 api.add_resource(MotorList, '/motor/')
 api.add_resource(MotorFeature, '/motor/<int:id>/feature/')
 api.add_resource(MotorWarningList, '/motor/warning/')
@@ -28,6 +36,7 @@ api.add_resource(MotorVphaseSignal, '/motor/<int:id>/vsignal/')
 api.add_resource(MotorVphaseParas, '/motor/<int:id>/vpara/')
 api.add_resource(MotorUphaseSignal, '/motor/<int:id>/usignal/')
 api.add_resource(MotorUphaseParas, '/motor/<int:id>/upara/')
+api.add_resource(MotorThreephaseSignal, '/motor/<int:id>/tsignal/')
 
 api.add_resource(MotorPackList, '/motor/<int:id>/packs/')
 api.add_resource(MotorPackDetail, '/motor/<int:id>/pack/')
@@ -35,10 +44,7 @@ api.add_resource(MotorPackDetail, '/motor/<int:id>/pack/')
 api.add_resource(MotorPackDQAnalysis, '/motor/<int:id>/pack/<int:pack_id>/dq/')
 api.add_resource(MotorPackHarmonic, '/motor/<int:id>/pack/<int:pack_id>/harmonics/')
 api.add_resource(MotorPackEnvelope, '/motor/<int:id>/pack/<int:pack_id>/envelope/')
-
-
-
-
+api.add_resource(MotorPackSymAnalysis, '/motor/<int:id>/pack/<int:pack_id>/sym/')
 # @blueprint.route('/motor/<int:id>/pack/')
 # from flask.json import jsonify
 # from processing.signals import dq0_transform, threephase_deserialize, fftransform
@@ -81,4 +87,3 @@ api.add_resource(MotorPackEnvelope, '/motor/<int:id>/pack/<int:pack_id>/envelope
 #     PackSchema().dump(data)
 #     x = time.time() - x
 #     return json.dumps(PackSchema().dump(data).data)
-

@@ -22,6 +22,10 @@ class Array(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
         return [round(float(item), 3) for item in value]
 
+    @staticmethod
+    def static_serialize(value):
+        return [round(float(item), 3) for item in value]
+
 
 class FeatureSchema(Schema):
     urms = fields.Float()
@@ -68,6 +72,9 @@ class PhaseSchema(Schema):
     amplitude = fields.Float()
     initial_phase = fields.Float()
     wave = Blob(dump_only=True)
+    u = Blob(dump_only=True)
+    v = Blob(dump_only=True)
+    w = Blob(dump_only=True)
 
 
 class PackSchema(Schema):
@@ -92,6 +99,7 @@ class PackSchema(Schema):
     uip = fields.Float()
     vip = fields.Float()
     wip = fields.Float()
+    sampling_rate = fields.Integer()
 
     @staticmethod
     def statu_mapper(obj):

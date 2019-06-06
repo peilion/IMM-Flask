@@ -4,7 +4,6 @@ from base.basic_base import Session
 from models.declarative_models import WarningLog, Motor
 from serializer.data_serializer import WarningSchema
 from flasgger import swag_from
-from flask_restful import inputs
 from models import retrieve_model
 
 warning_parser = reqparse.RequestParser()
@@ -14,6 +13,7 @@ warning_parser.add_argument('limit', location='args', required=False, type=int)
 
 
 class MotorWarningList(Resource):
+
     @swag_from('list.yaml')
     def get(self):
         args = warning_parser.parse_args()
@@ -42,6 +42,8 @@ class MotorWarningList(Resource):
 
 
 class MotorWarning(Resource):
+
+    # @cache.cached(timeout=50, key_prefix='motor_warning')
     @swag_from('get.yaml')
     def get(self, id):
         session = Session()

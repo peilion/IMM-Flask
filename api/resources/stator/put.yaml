@@ -11,7 +11,7 @@ parameters:
   - in: path
     name: id
     required: true
-    description: The ID of the motor,try 1~3
+    description: The ID of the BEARING
     type: string
   - in: query
     name: lr_time
