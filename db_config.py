@@ -13,7 +13,7 @@ table_args = {
     'mysql_engine': 'InnoDB',
     'mysql_charset': 'utf8'
 }
-engine = create_engine('mysql://root:8315814@127.0.0.1/flask-imm', convert_unicode=True)
+engine = create_engine('mysql://root:8315814@127.0.0.1/imm-prod', convert_unicode=True)
 
 admin_engine = create_engine('mysql://root:8315814@127.0.0.1/information_schema', convert_unicode=True)
 # Base.metadata.drop_all(bind=engine)

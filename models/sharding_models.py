@@ -8,25 +8,29 @@ from db_config import table_args, SHARDING_NUMBER
 from base.basic_base import Base
 
 
-class CurrentsPack(object):
+class ElectricalData(object):
     _mapper = {}
 
     @staticmethod
     def model(motor_id):
         table_index = motor_id % 3
-        class_name = 'currentspack_%d' % table_index
-        ModelClass = CurrentsPack._mapper.get(class_name, None)
+        class_name = 'elecdata_%d' % table_index
+        ModelClass = ElectricalData._mapper.get(class_name, None)
         if ModelClass is None:
             ModelClass = type(class_name, (Base,), dict(
                 __module__=__name__,
                 __name__=class_name,
-                __tablename__='currentspack_%d' % table_index,
+                __tablename__='elecdata_%d' % table_index,
                 id=Column(BigInteger, primary_key=True),
                 time=Column(DateTime, default=func.now()),
                 motor_id=Column(Integer, ForeignKey('motor.id'), nullable=False),
-                sampling_rate=Column(Integer, nullable=True),
-                rpm=Column(SmallInteger, default=3000),
-
+                rpm=Column(SmallInteger, nullable=True, default=3000),
+                ucur=Column(LargeBinary, nullable=False),
+                vcur=Column(LargeBinary, nullable=False),
+                wcur=Column(LargeBinary, nullable=False),
+                uvolt=Column(LargeBinary, nullable=False),
+                vvolt=Column(LargeBinary, nullable=False),
+                wvolt=Column(LargeBinary, nullable=False),
                 # motor=relationship('Motor', back_populates='packs'),
                 # uphase=relationship('uphase_%d' % table_index, back_populates='pack', uselist=False),
                 # vphase=relationship('vphase_%d' % table_index, back_populates='pack', uselist=False),
@@ -36,49 +40,9 @@ class CurrentsPack(object):
 
                 __table_args__=table_args
             ))
-            CurrentsPack._mapper[class_name] = ModelClass
+            ElectricalData._mapper[class_name] = ModelClass
         cls = ModelClass
         return cls
-
-
-class Uphase(object):
-    _mapper = {}
-    base_class_name = 'uphase'
-
-    @classmethod
-    def model(cls, motor_id):
-        table_index = motor_id % SHARDING_NUMBER
-        class_name = cls.base_class_name + '_%d' % table_index
-        ModelClass = cls._mapper.get(class_name, None)
-        if ModelClass is None:
-            ModelClass = type(class_name, (Base,), dict(
-                __module__=__name__,
-                __name__=class_name,
-                __tablename__=class_name,
-                id=Column(BigInteger, primary_key=True),
-                wave=Column(LargeBinary, nullable=False),
-                frequency=Column(Float, default=0),
-                amplitude=Column(Float, default=0),
-                initial_phase=Column(Float, default=0),
-                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index)),unique=True),
-
-                # pack=relationship('currentspack_%d' % table_index, back_populates=cls.base_class_name),
-
-                __table_args__=table_args
-            ))
-            cls._mapper[class_name] = ModelClass
-        mapper = ModelClass
-        return mapper
-
-
-class Vphase(Uphase):
-    _mapper = {}
-    base_class_name = 'vphase'
-
-
-class Wphase(Uphase):
-    _mapper = {}
-    base_class_name = 'wphase'
 
 
 class Feature(object):
@@ -102,6 +66,9 @@ class Feature(object):
                 umax_current=Column(Float, default=0),
                 umin_current=Column(Float, default=0),
                 ufbrb=Column(LargeBinary, nullable=True),
+                ufrequency=Column(Float, default=0),
+                uamplitude=Column(Float, default=0),
+                uinitial_phase=Column(Float, default=0),
 
                 vrms=Column(Float, default=0),
                 vthd=Column(Float, default=0),
@@ -109,6 +76,9 @@ class Feature(object):
                 vmax_current=Column(Float, default=0),
                 vmin_current=Column(Float, default=0),
                 vfbrb=Column(LargeBinary, nullable=True),
+                vfrequency=Column(Float, default=0),
+                vamplitude=Column(Float, default=0),
+                vinitial_phase=Column(Float, default=0),
 
                 wrms=Column(Float, default=0),
                 wthd=Column(Float, default=0),
@@ -116,13 +86,16 @@ class Feature(object):
                 wmax_current=Column(Float, default=0),
                 wmin_current=Column(Float, default=0),
                 wfbrb=Column(LargeBinary, nullable=True),
+                wfrequency=Column(Float, default=0),
+                wamplitude=Column(Float, default=0),
+                winitial_phase=Column(Float, default=0),
 
                 n_rms=Column(Float, default=0),
                 p_rms=Column(Float, default=0),
                 z_rms=Column(Float, default=0),
                 imbalance=Column(Float, default=0),
 
-                pack_id=Column(BigInteger, ForeignKey('currentspack_{0}.id'.format(table_index)),unique=True),
+                data_id=Column(BigInteger, ForeignKey('elecdata_{0}.id'.format(table_index)),unique=True),
 
                 # pack=relationship('currentspack_%d' % table_index, back_populates=cls.base_class_name),
 
@@ -161,8 +134,5 @@ class Feature(object):
 
 
 for i in range(1, 4):
-    CurrentsPackModel = CurrentsPack.model(motor_id=i)
-    UphaseModel = Uphase.model(motor_id=i)
-    VphaseModel = Vphase.model(motor_id=i)
-    WphaseModel = Wphase.model(motor_id=i)
+    ElectricalDataModel = ElectricalData.model(motor_id=i)
     FeatureModel = Feature.model(motor_id=i)

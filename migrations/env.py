@@ -24,6 +24,8 @@ fileConfig(config.config_file_name)
 
 
 from base.basic_base import Base
+from models.declarative_models import *
+from models.sharding_models import *
 target_metadata = Base.metadata
 
 

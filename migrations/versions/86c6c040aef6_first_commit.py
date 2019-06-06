@@ -1,16 +1,18 @@
 """first commit
 
-Revision ID: 9af8d7459428
+Revision ID: 86c6c040aef6
 Revises: 
-Create Date: 2019-05-10 16:19:07.910749
+Create Date: 2019-06-06 20:01:15.298177
 
 """
 from alembic import op
 import sqlalchemy as sa
 import sqlalchemy_utils
 from models.declarative_models import Asset,WarningLog
+
+
 # revision identifiers, used by Alembic.
-revision = '9af8d7459428'
+revision = '86c6c040aef6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -78,7 +80,7 @@ def upgrade():
     sa.Column('md_time', sa.DateTime(), nullable=True),
     sa.Column('equip_type', sqlalchemy_utils.types.choice.ChoiceType(choices=Asset.TYPES), nullable=True),
     sa.Column('memo', sa.Text(), nullable=True),
-    sa.Column('statu', sqlalchemy_utils.types.choice.ChoiceType(choices=Asset.STATUS), nullable=True),
+    sa.Column('statu', sqlalchemy_utils.types.choice.ChoiceType(Asset.STATUS), nullable=True),
     sa.Column('motor_id', sa.Integer(), nullable=True),
     sa.Column('inner_race_diameter', sa.Float(), nullable=True),
     sa.Column('inner_race_width', sa.Float(), nullable=True),
@@ -96,34 +98,49 @@ def upgrade():
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )
-    op.create_table('currentspack_0',
+    op.create_table('elecdata_0',
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('time', sa.DateTime(), nullable=True),
     sa.Column('motor_id', sa.Integer(), nullable=False),
-    sa.Column('sampling_rate', sa.Integer(), nullable=True),
     sa.Column('rpm', sa.SmallInteger(), nullable=True),
+    sa.Column('ucur', sa.LargeBinary(), nullable=False),
+    sa.Column('vcur', sa.LargeBinary(), nullable=False),
+    sa.Column('wcur', sa.LargeBinary(), nullable=False),
+    sa.Column('uvolt', sa.LargeBinary(), nullable=True),
+    sa.Column('vvolt', sa.LargeBinary(), nullable=True),
+    sa.Column('wvolt', sa.LargeBinary(), nullable=True),
     sa.ForeignKeyConstraint(['motor_id'], ['motor.id'], ),
     sa.PrimaryKeyConstraint('id'),
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )
-    op.create_table('currentspack_1',
+    op.create_table('elecdata_1',
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('time', sa.DateTime(), nullable=True),
     sa.Column('motor_id', sa.Integer(), nullable=False),
-    sa.Column('sampling_rate', sa.Integer(), nullable=True),
     sa.Column('rpm', sa.SmallInteger(), nullable=True),
+    sa.Column('ucur', sa.LargeBinary(), nullable=False),
+    sa.Column('vcur', sa.LargeBinary(), nullable=False),
+    sa.Column('wcur', sa.LargeBinary(), nullable=False),
+    sa.Column('uvolt', sa.LargeBinary(), nullable=True),
+    sa.Column('vvolt', sa.LargeBinary(), nullable=True),
+    sa.Column('wvolt', sa.LargeBinary(), nullable=True),
     sa.ForeignKeyConstraint(['motor_id'], ['motor.id'], ),
     sa.PrimaryKeyConstraint('id'),
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )
-    op.create_table('currentspack_2',
+    op.create_table('elecdata_2',
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('time', sa.DateTime(), nullable=True),
     sa.Column('motor_id', sa.Integer(), nullable=False),
-    sa.Column('sampling_rate', sa.Integer(), nullable=True),
     sa.Column('rpm', sa.SmallInteger(), nullable=True),
+    sa.Column('ucur', sa.LargeBinary(), nullable=False),
+    sa.Column('vcur', sa.LargeBinary(), nullable=False),
+    sa.Column('wcur', sa.LargeBinary(), nullable=False),
+    sa.Column('uvolt', sa.LargeBinary(), nullable=True),
+    sa.Column('vvolt', sa.LargeBinary(), nullable=True),
+    sa.Column('wvolt', sa.LargeBinary(), nullable=True),
     sa.ForeignKeyConstraint(['motor_id'], ['motor.id'], ),
     sa.PrimaryKeyConstraint('id'),
     mysql_charset='utf8',
@@ -198,26 +215,35 @@ def upgrade():
     sa.Column('umax_current', sa.Float(), nullable=True),
     sa.Column('umin_current', sa.Float(), nullable=True),
     sa.Column('ufbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('ufrequency', sa.Float(), nullable=True),
+    sa.Column('uamplitude', sa.Float(), nullable=True),
+    sa.Column('uinitial_phase', sa.Float(), nullable=True),
     sa.Column('vrms', sa.Float(), nullable=True),
     sa.Column('vthd', sa.Float(), nullable=True),
     sa.Column('vharmonics', sa.LargeBinary(), nullable=True),
     sa.Column('vmax_current', sa.Float(), nullable=True),
     sa.Column('vmin_current', sa.Float(), nullable=True),
     sa.Column('vfbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('vfrequency', sa.Float(), nullable=True),
+    sa.Column('vamplitude', sa.Float(), nullable=True),
+    sa.Column('vinitial_phase', sa.Float(), nullable=True),
     sa.Column('wrms', sa.Float(), nullable=True),
     sa.Column('wthd', sa.Float(), nullable=True),
     sa.Column('wharmonics', sa.LargeBinary(), nullable=True),
     sa.Column('wmax_current', sa.Float(), nullable=True),
     sa.Column('wmin_current', sa.Float(), nullable=True),
     sa.Column('wfbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('wfrequency', sa.Float(), nullable=True),
+    sa.Column('wamplitude', sa.Float(), nullable=True),
+    sa.Column('winitial_phase', sa.Float(), nullable=True),
     sa.Column('n_rms', sa.Float(), nullable=True),
     sa.Column('p_rms', sa.Float(), nullable=True),
     sa.Column('z_rms', sa.Float(), nullable=True),
     sa.Column('imbalance', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_0.id'], ),
+    sa.Column('data_id', sa.BigInteger(), nullable=True),
+    sa.ForeignKeyConstraint(['data_id'], ['elecdata_0.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
+    sa.UniqueConstraint('data_id'),
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )
@@ -229,26 +255,35 @@ def upgrade():
     sa.Column('umax_current', sa.Float(), nullable=True),
     sa.Column('umin_current', sa.Float(), nullable=True),
     sa.Column('ufbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('ufrequency', sa.Float(), nullable=True),
+    sa.Column('uamplitude', sa.Float(), nullable=True),
+    sa.Column('uinitial_phase', sa.Float(), nullable=True),
     sa.Column('vrms', sa.Float(), nullable=True),
     sa.Column('vthd', sa.Float(), nullable=True),
     sa.Column('vharmonics', sa.LargeBinary(), nullable=True),
     sa.Column('vmax_current', sa.Float(), nullable=True),
     sa.Column('vmin_current', sa.Float(), nullable=True),
     sa.Column('vfbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('vfrequency', sa.Float(), nullable=True),
+    sa.Column('vamplitude', sa.Float(), nullable=True),
+    sa.Column('vinitial_phase', sa.Float(), nullable=True),
     sa.Column('wrms', sa.Float(), nullable=True),
     sa.Column('wthd', sa.Float(), nullable=True),
     sa.Column('wharmonics', sa.LargeBinary(), nullable=True),
     sa.Column('wmax_current', sa.Float(), nullable=True),
     sa.Column('wmin_current', sa.Float(), nullable=True),
     sa.Column('wfbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('wfrequency', sa.Float(), nullable=True),
+    sa.Column('wamplitude', sa.Float(), nullable=True),
+    sa.Column('winitial_phase', sa.Float(), nullable=True),
     sa.Column('n_rms', sa.Float(), nullable=True),
     sa.Column('p_rms', sa.Float(), nullable=True),
     sa.Column('z_rms', sa.Float(), nullable=True),
     sa.Column('imbalance', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_1.id'], ),
+    sa.Column('data_id', sa.BigInteger(), nullable=True),
+    sa.ForeignKeyConstraint(['data_id'], ['elecdata_1.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
+    sa.UniqueConstraint('data_id'),
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )
@@ -260,143 +295,35 @@ def upgrade():
     sa.Column('umax_current', sa.Float(), nullable=True),
     sa.Column('umin_current', sa.Float(), nullable=True),
     sa.Column('ufbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('ufrequency', sa.Float(), nullable=True),
+    sa.Column('uamplitude', sa.Float(), nullable=True),
+    sa.Column('uinitial_phase', sa.Float(), nullable=True),
     sa.Column('vrms', sa.Float(), nullable=True),
     sa.Column('vthd', sa.Float(), nullable=True),
     sa.Column('vharmonics', sa.LargeBinary(), nullable=True),
     sa.Column('vmax_current', sa.Float(), nullable=True),
     sa.Column('vmin_current', sa.Float(), nullable=True),
     sa.Column('vfbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('vfrequency', sa.Float(), nullable=True),
+    sa.Column('vamplitude', sa.Float(), nullable=True),
+    sa.Column('vinitial_phase', sa.Float(), nullable=True),
     sa.Column('wrms', sa.Float(), nullable=True),
     sa.Column('wthd', sa.Float(), nullable=True),
     sa.Column('wharmonics', sa.LargeBinary(), nullable=True),
     sa.Column('wmax_current', sa.Float(), nullable=True),
     sa.Column('wmin_current', sa.Float(), nullable=True),
     sa.Column('wfbrb', sa.LargeBinary(), nullable=True),
+    sa.Column('wfrequency', sa.Float(), nullable=True),
+    sa.Column('wamplitude', sa.Float(), nullable=True),
+    sa.Column('winitial_phase', sa.Float(), nullable=True),
     sa.Column('n_rms', sa.Float(), nullable=True),
     sa.Column('p_rms', sa.Float(), nullable=True),
     sa.Column('z_rms', sa.Float(), nullable=True),
     sa.Column('imbalance', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_2.id'], ),
+    sa.Column('data_id', sa.BigInteger(), nullable=True),
+    sa.ForeignKeyConstraint(['data_id'], ['elecdata_2.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('uphase_0',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_0.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('uphase_1',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_1.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('uphase_2',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_2.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('vphase_0',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_0.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('vphase_1',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_1.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('vphase_2',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_2.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('wphase_0',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_0.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('wphase_1',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_1.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
-    mysql_charset='utf8',
-    mysql_engine='InnoDB'
-    )
-    op.create_table('wphase_2',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('wave', sa.LargeBinary(), nullable=False),
-    sa.Column('frequency', sa.Float(), nullable=True),
-    sa.Column('amplitude', sa.Float(), nullable=True),
-    sa.Column('initial_phase', sa.Float(), nullable=True),
-    sa.Column('pack_id', sa.BigInteger(), nullable=True),
-    sa.ForeignKeyConstraint(['pack_id'], ['currentspack_2.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('pack_id'),
+    sa.UniqueConstraint('data_id'),
     mysql_charset='utf8',
     mysql_engine='InnoDB'
     )
@@ -405,24 +332,15 @@ def upgrade():
 
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_table('wphase_2')
-    op.drop_table('wphase_1')
-    op.drop_table('wphase_0')
-    op.drop_table('vphase_2')
-    op.drop_table('vphase_1')
-    op.drop_table('vphase_0')
-    op.drop_table('uphase_2')
-    op.drop_table('uphase_1')
-    op.drop_table('uphase_0')
     op.drop_table('feature_2')
     op.drop_table('feature_1')
     op.drop_table('feature_0')
     op.drop_table('warninglog')
     op.drop_table('stator')
     op.drop_table('rotor')
-    op.drop_table('currentspack_2')
-    op.drop_table('currentspack_1')
-    op.drop_table('currentspack_0')
+    op.drop_table('elecdata_2')
+    op.drop_table('elecdata_1')
+    op.drop_table('elecdata_0')
     op.drop_table('bearing')
     op.drop_table('motor')
     op.drop_table('user')
