@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint
 from flask_restful import Api
 
 from api.resources import UserResource, EquipGroupList, EquipGroupDetail, MotorDetail, RotorDetail, StatorDetail, \
@@ -45,6 +45,7 @@ api.add_resource(MotorPackDQAnalysis, '/motor/<int:id>/pack/<int:pack_id>/dq/')
 api.add_resource(MotorPackHarmonic, '/motor/<int:id>/pack/<int:pack_id>/harmonics/')
 api.add_resource(MotorPackEnvelope, '/motor/<int:id>/pack/<int:pack_id>/envelope/')
 api.add_resource(MotorPackSymAnalysis, '/motor/<int:id>/pack/<int:pack_id>/sym/')
+
 # @blueprint.route('/motor/<int:id>/pack/')
 # from flask.json import jsonify
 # from processing.signals import dq0_transform, threephase_deserialize, fftransform
