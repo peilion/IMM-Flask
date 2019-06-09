@@ -8,7 +8,7 @@ from flask_restful import reqparse, inputs
 
 equipgroup_parser = reqparse.RequestParser()
 equipgroup_parser.add_argument('iftree', location='args', required=False,
-                               type=inputs.boolean)  # use bool directly make this arg always true.
+                               type=inputs.boolean)  # use python default bool type directly will make this arg always true.
 
 
 class EquipGroupDetail(Resource):
@@ -18,10 +18,11 @@ class EquipGroupDetail(Resource):
         motor = session.query(Motor). \
             options(joinedload(Motor.rotors),
                     joinedload(Motor.stators),
-                    joinedload(Motor.bearings)). \
+                    joinedload(Motor.bearings),
+                    joinedload(Motor.admin)). \
             filter_by(id=id). \
             one()
-        session.close()
+        session.close()  # all related objects must be joined loaded before closing the session.
         return EquipGroupSchema().dump(motor)[0]
 
 

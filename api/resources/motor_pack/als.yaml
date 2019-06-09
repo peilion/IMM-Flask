@@ -18,7 +18,7 @@ parameters:
     name: pack_id
     required: true
     type: integer
-    default: 906
+    default: 156
 responses:
   200:
     description: Success

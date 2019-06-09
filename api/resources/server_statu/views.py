@@ -12,7 +12,7 @@ class ServerStatu(Resource):
         s = text(
             "select concat(round(sum(data_length/1024/1024),2),'MB') as table_volume, table_rows "
             "from tables "
-            "where table_schema='flask-imm' and table_name='uphase_0'")
+            "where table_schema='imm-prod' and table_name='elecdata_0'")
         conn = admin_engine.connect()
         result = conn.execute(s)
         data = result.fetchone()

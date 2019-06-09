@@ -1,7 +1,7 @@
 from flask_restful import reqparse, Resource, inputs
 from flasgger import swag_from
 from processing.signals import dq0_transform, threephase_deserialize, fftransform, cal_symm, make_phase
-from models.sharding_models import CurrentsPack, Uphase, Vphase, Wphase, Feature
+from models.sharding_models import ElectricalData, Feature
 from models.declarative_models import Motor
 from base.basic_base import Session
 from serializer.data_serializer import PackSchema, FeatureSchema, EnvelopeSchema, Array
@@ -20,10 +20,10 @@ class MotorPackList(Resource):
     @swag_from('list.yaml')
     def get(self, id):
         args = pack_parser.parse_args()
-        pack = CurrentsPack.model(motor_id=id)
+        elecdata = ElectricalData.model(motor_id=id)
         session = Session()
         data = session. \
-            query(pack.id, pack.time, pack.rpm).filter(pack.time.between(args['timeafter'], args['timebefore'])). \
+            query(elecdata.id, elecdata.time, elecdata.rpm).filter(elecdata.time.between(args['timeafter'], args['timebefore'])). \
             all()
         session.close()
         return PackSchema(only=('id', 'time', 'rpm')).dump(data, many=True).data
@@ -33,26 +33,20 @@ class MotorPackDetail(Resource):
     @swag_from('get.yaml')
     def get(self, id):
         args = pack_parser.parse_args()
-        pack = CurrentsPack.model(motor_id=id)
-        uphase = Uphase.model(motor_id=id)
-        vphase = Vphase.model(motor_id=id)
-        wphase = Wphase.model(motor_id=id)
-
+        elecdata = ElectricalData.model(motor_id=id)
+        feature = Feature.model(motor_id=id)
         if args['newest']:
             session = Session()
 
             q = session. \
-                query(pack.id, pack.time, pack.rpm, pack.sampling_rate, pack.rpm, Motor.name, Motor.statu, Motor.sn,
-                      uphase.wave.label('usignal'), vphase.wave.label('vsignal'), wphase.wave.label('wsignal'),
-                      uphase.amplitude.label('uamp'), vphase.amplitude.label('vamp'), wphase.amplitude.label('wamp'),
-                      uphase.frequency.label('ufreq'), vphase.frequency.label('vfreq'), wphase.frequency.label('wfreq'),
-                      uphase.initial_phase.label('uip'), vphase.initial_phase.label('vip'),
-                      wphase.initial_phase.label('wip')). \
-                join(Motor, Motor.id == pack.motor_id). \
-                join(uphase, uphase.pack_id == pack.id). \
-                join(vphase, vphase.pack_id == pack.id). \
-                join(wphase, wphase.pack_id == pack.id). \
-                order_by(pack.id.desc()). \
+                query(elecdata.id, elecdata.time, elecdata.rpm, Motor.name, Motor.statu, Motor.sn,
+                      elecdata.ucur.label('usignal'), elecdata.vcur.label('vsignal'), elecdata.wcur.label('wsignal'),
+                      feature.uamplitude.label('uamp'), feature.vamplitude.label('vamp'), feature.wamplitude.label('wamp'),
+                      feature.ufrequency.label('ufreq'), feature.vfrequency.label('vfreq'), feature.wfrequency.label('wfreq'),
+                      feature.uinitial_phase.label('uip'), feature.vinitial_phase.label('vip'),feature.winitial_phase.label('wip')). \
+                join(Motor, Motor.id == elecdata.motor_id). \
+                join(feature, feature.data_id == elecdata.id). \
+                order_by(elecdata.id.desc()). \
                 first()
             data = q._asdict()
 
@@ -70,9 +64,9 @@ class MotorPackDetail(Resource):
             session = Session()
 
             data = session. \
-                query(pack.id, pack.time, pack.rpm, pack.sampling_rate, pack.rpm, Motor.name, Motor.statu, Motor.sn). \
-                join(Motor, Motor.id == pack.motor_id). \
-                filter(pack.id == args['pack_id']). \
+                query(elecdata.id, elecdata.time, elecdata.rpm, Motor.name, Motor.statu, Motor.sn). \
+                join(Motor, Motor.id == elecdata.motor_id). \
+                filter(elecdata.id == args['pack_id']). \
                 first()
             data = data._asdict()
             session.close()
@@ -84,20 +78,17 @@ class MotorPackSymAnalysis(Resource):
 
     @swag_from('als.yaml')
     def get(self, id, pack_id):
-        uphase = Uphase.model(motor_id=id)
-        vphase = Vphase.model(motor_id=id)
-        wphase = Wphase.model(motor_id=id)
+        feature = Feature.model(motor_id=id)
+
         session = Session()
         data = session. \
-            query(uphase.frequency.label('ufrequency'), vphase.frequency.label('vfrequency'),
-                  wphase.frequency.label('wfrequency'),
-                  uphase.amplitude.label('uamplitude'), vphase.amplitude.label('vamplitude'),
-                  wphase.amplitude.label('wamplitude'),
-                  uphase.initial_phase.label('uinitial_phase'), vphase.initial_phase.label('vinitial_phase'),
-                  wphase.initial_phase.label('winitial_phase')). \
-            join(vphase, vphase.pack_id == uphase.pack_id). \
-            join(wphase, wphase.pack_id == uphase.pack_id). \
-            filter_by(pack_id=pack_id).one()
+            query(feature.ufrequency.label('ufrequency'), feature.vfrequency.label('vfrequency'),
+                  feature.wfrequency.label('wfrequency'),
+                  feature.uamplitude.label('uamplitude'), feature.vamplitude.label('vamplitude'),
+                  feature.wamplitude.label('wamplitude'),
+                  feature.uinitial_phase.label('uinitial_phase'), feature.vinitial_phase.label('vinitial_phase'),
+                  feature.winitial_phase.label('winitial_phase')). \
+            filter_by(data_id=pack_id).one()
         session.close()
         complex_list = []
         for item in ['u', 'v', 'w']:
@@ -127,15 +118,12 @@ class MotorPackDQAnalysis(Resource):
 
     @swag_from('als.yaml')
     def get(self, id, pack_id):
-        uphase = Uphase.model(motor_id=id)
-        vphase = Vphase.model(motor_id=id)
-        wphase = Wphase.model(motor_id=id)
+        elecdata = ElectricalData.model(motor_id=id)
+
         session = Session()
         data = session. \
-            query(uphase.wave.label('u'), vphase.wave.label('v'), wphase.wave.label('w')). \
-            join(vphase, vphase.pack_id == uphase.pack_id). \
-            join(wphase, wphase.pack_id == uphase.pack_id). \
-            filter_by(pack_id=pack_id).one()
+            query(elecdata.ucur.label('u'), elecdata.vcur.label('v'), elecdata.wcur.label('w')). \
+            filter_by(id=pack_id).one()
         session.close()
         u, v, w = threephase_deserialize(data.u, data.v, data.w)
 
@@ -152,22 +140,18 @@ class MotorPackHarmonic(Resource):
 
     @swag_from('als.yaml')
     def get(self, id, pack_id):
-        uphase = Uphase.model(motor_id=id)
-        vphase = Vphase.model(motor_id=id)
-        wphase = Wphase.model(motor_id=id)
-
+        elecdata = ElectricalData.model(motor_id=id)
         feature = Feature.model(motor_id=id)
+
         session = Session()
 
         data = session. \
-            query(uphase.wave.label('u'), vphase.wave.label('v'), wphase.wave.label('w'),
+            query(elecdata.ucur.label('u'), elecdata.vcur.label('v'), elecdata.wcur.label('w'),
                   feature.uharmonics, feature.uthd,
                   feature.vharmonics, feature.vthd,
                   feature.wharmonics, feature.wthd). \
-            join(vphase, vphase.pack_id == uphase.pack_id). \
-            join(wphase, wphase.pack_id == uphase.pack_id). \
-            join(feature, feature.pack_id == uphase.pack_id). \
-            filter_by(pack_id=pack_id).one()
+            join(feature, feature.data_id == elecdata.id). \
+            filter_by(id=pack_id).one()
         session.close()
 
         data = data._asdict()
@@ -182,14 +166,11 @@ class MotorPackEnvelope(Resource):
 
     @swag_from('als.yaml')
     def get(self, id, pack_id):
-        uphase = Uphase.model(motor_id=id)
-        vphase = Vphase.model(motor_id=id)
-        wphase = Wphase.model(motor_id=id)
+        elecdata = ElectricalData.model(motor_id=id)
+
         session = Session()
-        data = session.query(uphase.wave.label('u'), vphase.wave.label('v'), wphase.wave.label('w')). \
-            join(vphase, vphase.pack_id == uphase.pack_id). \
-            join(wphase, wphase.pack_id == uphase.pack_id). \
-            filter_by(pack_id=pack_id).one()
+        data = session.query(elecdata.ucur.label('u'), elecdata.vcur.label('v'), elecdata.wcur.label('w')). \
+            filter_by(id=pack_id).one()
         session.close()
         data = data._asdict()
         for key in ['u', 'v', 'w']:

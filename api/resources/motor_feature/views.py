@@ -1,7 +1,7 @@
 from flask_restful import reqparse, Resource, inputs
 from flasgger import swag_from
 from models import retrieve_model
-from models.sharding_models import Feature, Uphase
+from models.sharding_models import Feature, ElectricalData
 from base.basic_base import Session
 from serializer.data_serializer import FeatureSchema
 import time
@@ -35,11 +35,10 @@ class MotorFeature(Resource):
             return dic
         elif args['newest'] is True:
             feature = Feature.model(motor_id=id)
-            uphase = Uphase.model(motor_id=id)
+            data = ElectricalData.model(motor_id=id)
             session = Session()
             data = session. \
-                query(feature.urms, feature.vrms, feature.wrms, feature.n_rms, feature.p_rms, uphase.frequency). \
-                join(uphase, feature.pack_id == uphase.pack_id). \
+                query(feature.urms, feature.vrms, feature.wrms, feature.n_rms, feature.p_rms, feature.ufrequency.label('frequency')). \
                 order_by(feature.id.desc()).first()
             session.close()
             return FeatureSchema().dump(data).data

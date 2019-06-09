@@ -57,9 +57,9 @@ def get_motor_trend(id, args):
     fields = fields.rstrip(',')
 
     s = text(
-        'SELECT pack.time as time,{0} from currentspack_{1} as pack '
-        'LEFT OUTER JOIN feature_{1} as f on (pack.id = f.pack_id)'
-        'where pack.time between :timeafter and :timebefore;'.format(fields, table_hash))
+        'SELECT elec.time as time,{0} from elecdata_{1} as elec '
+        'LEFT OUTER JOIN feature_{1} as f on (elec.id = f.data_id)'
+        'where elec.time between :timeafter and :timebefore;'.format(fields, table_hash))
     conn = engine.connect()
     query = conn.execute(s, timeafter=args['timeafter'], timebefore=args['timebefore'])
     result = query.fetchall()
