@@ -8,6 +8,8 @@ import numpy as np
 import scipy
 import sys
 import flask_monitoringdashboard as dashboard
+from admin import make_admin
+
 
 # Build paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,7 +20,7 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 # init app object
 app = Flask(__name__)
 
-# init api dashboard
+# init api dashboard, localhost:5000/dashboard u:admin p:admin
 dashboard.bind(app)
 
 # configuring
@@ -39,7 +41,10 @@ app.register_blueprint(api.views.blueprint)
 # ie:
 # import cache from extensions
 # @cache.cached(timeout=50)
-cache.init_app(app)
+# cache.init_app(app)
+
+# Flask admin, url: host/admin/
+admin = make_admin(app)
 
 if __name__ == '__main__':
 
