@@ -27,6 +27,13 @@ class Array(fields.Field):
         return [round(float(item), 3) for item in value]
 
 
+class SubsampledBlob(fields.Field):
+    def _serialize(self, value, attr, obj, **kwargs):
+        raw = np.fromstring(value, dtype=np.float32)
+        axis = np.linspace(0, raw.size, int(raw.size / 2),endpoint=False)
+        return [round(float(item), 3) for item in np.take(raw, axis.astype(np.int))]
+
+
 class FeatureSchema(Schema):
     urms = fields.Float()
     vrms = fields.Float()
@@ -72,9 +79,9 @@ class PhaseSchema(Schema):
     amplitude = fields.Float()
     initial_phase = fields.Float()
     wave = Blob(dump_only=True)
-    u = Blob(dump_only=True)
-    v = Blob(dump_only=True)
-    w = Blob(dump_only=True)
+    u = SubsampledBlob(dump_only=True)
+    v = SubsampledBlob(dump_only=True)
+    w = SubsampledBlob(dump_only=True)
 
 
 class PackSchema(Schema):

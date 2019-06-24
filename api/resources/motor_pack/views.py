@@ -23,7 +23,8 @@ class MotorPackList(Resource):
         elecdata = ElectricalData.model(motor_id=id)
         session = Session()
         data = session. \
-            query(elecdata.id, elecdata.time, elecdata.rpm).filter(elecdata.time.between(args['timeafter'], args['timebefore'])). \
+            query(elecdata.id, elecdata.time, elecdata.rpm).filter(
+            elecdata.time.between(args['timeafter'], args['timebefore'])). \
             all()
         session.close()
         return PackSchema(only=('id', 'time', 'rpm')).dump(data, many=True).data
@@ -41,22 +42,31 @@ class MotorPackDetail(Resource):
             q = session. \
                 query(elecdata.id, elecdata.time, elecdata.rpm, Motor.name, Motor.statu, Motor.sn,
                       elecdata.ucur.label('usignal'), elecdata.vcur.label('vsignal'), elecdata.wcur.label('wsignal'),
-                      feature.uamplitude.label('uamp'), feature.vamplitude.label('vamp'), feature.wamplitude.label('wamp'),
-                      feature.ufrequency.label('ufreq'), feature.vfrequency.label('vfreq'), feature.wfrequency.label('wfreq'),
-                      feature.uinitial_phase.label('uip'), feature.vinitial_phase.label('vip'),feature.winitial_phase.label('wip')). \
+                      feature.uamplitude.label('uamp'), feature.vamplitude.label('vamp'),
+                      feature.wamplitude.label('wamp'),
+                      feature.ufrequency.label('ufreq'), feature.vfrequency.label('vfreq'),
+                      feature.wfrequency.label('wfreq'),
+                      feature.uinitial_phase.label('uip'), feature.vinitial_phase.label('vip'),
+                      feature.winitial_phase.label('wip')). \
                 join(Motor, Motor.id == elecdata.motor_id). \
                 join(feature, feature.data_id == elecdata.id). \
                 order_by(elecdata.id.desc()). \
                 first()
+            session.close()
+
             data = q._asdict()
 
             data['usignal'] = np.fromstring(data['usignal'], dtype=np.float32)
             data['vsignal'] = np.fromstring(data['vsignal'], dtype=np.float32)
             data['wsignal'] = np.fromstring(data['wsignal'], dtype=np.float32)
-            data['ufft'] = np.around(fftransform(data['usignal']), decimals=3)
-            data['vfft'] = np.around(fftransform(data['vsignal']), decimals=3)
-            data['wfft'] = np.around(fftransform(data['wsignal']), decimals=3)
-            session.close()
+            data['ufft'] = fftransform(data['usignal'])[:1000]
+            data['vfft'] = fftransform(data['vsignal'])[:1000]
+            data['wfft'] = fftransform(data['wsignal'])[:1000]
+
+            axis = np.linspace(0, data['usignal'].size, int(data['usignal'].size / 2), endpoint=False)
+            data['usignal'] = np.take(data['usignal'], axis.astype(np.int))
+            data['vsignal'] = np.take(data['vsignal'], axis.astype(np.int))
+            data['wsignal'] = np.take(data['wsignal'], axis.astype(np.int))
 
             return PackSchema().dump(data)
 

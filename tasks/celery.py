@@ -10,18 +10,29 @@ import numpy as np
 
 app = Celery('tasks',
              broker='pyamqp://guest@localhost//',
-             backend='redis://@localhost')
+             # backend='redis://@localhost'
+             )
 
 # Optional configuration, see the application user guide.
 app.conf.update(
     result_expires=10,
 )
 app.conf.beat_schedule = {
-    "cal_feature-in-30-seconds-task": {
+    "cal-feature-for-motor-3-in-60-seconds-task": {
         "task": "tasks.celery.cal_feature",
         "schedule": 60.0,
         "args": (3,)
-    }
+    },
+    "cal-feature-for-motor-2-in-60-seconds-task": {
+        "task": "tasks.celery.cal_feature",
+        "schedule": 60.0,
+        "args": (2,)
+    },
+    "cal-feature-for-motor-1-in-60-seconds-task": {
+        "task": "tasks.celery.cal_feature",
+        "schedule": 60.0,
+        "args": (1,)
+    },
 }
 
 

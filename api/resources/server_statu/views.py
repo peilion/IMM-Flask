@@ -10,7 +10,7 @@ class ServerStatu(Resource):
     @swag_from('get.yaml')
     def get(self):
         s = text(
-            "select concat(round(sum(data_length/1024/1024),2),'MB') as table_volume, table_rows "
+            "select concat(round(data_length/1024/1024,2),'MB') as table_volume, table_rows "
             "from tables "
             "where table_schema='imm-prod' and table_name='elecdata_0'")
         conn = admin_engine.connect()

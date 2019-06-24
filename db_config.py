@@ -13,9 +13,9 @@ table_args = {
     'mysql_engine': 'InnoDB',
     'mysql_charset': 'utf8'
 }
-engine = create_engine('mysql://root:8315814@127.0.0.1/imm-prod', convert_unicode=True)
+engine = create_engine('mysql://git:Fpl8315814.@123.56.7.137/imm-prod', convert_unicode=True)
 
-admin_engine = create_engine('mysql://root:8315814@127.0.0.1/information_schema', convert_unicode=True)
+admin_engine = create_engine('mysql://git:Fpl8315814.@123.56.7.137/information_schema', convert_unicode=True)
 # Base.metadata.drop_all(bind=engine)
 # Base.metadata.create_all(bind=engine)
 SHARDING_NUMBER = 3
