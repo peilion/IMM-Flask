@@ -22,10 +22,27 @@ parameters:
     items:
       type: string
       enum:
-       - rms
-       - max_current
-       - min_current
-       - thd
+       - urms
+       - uthd
+       - umax_current
+       - umin_current
+       - ufrequency
+       - uamplitude
+       - uinitial_phase
+       - vrms
+       - vthd
+       - vmax_current
+       - vmin_current
+       - vfrequency
+       - vamplitude
+       - vinitial_phase
+       - wrms
+       - wthd
+       - wmax_current
+       - wmin_current
+       - wfrequency
+       - wamplitude
+       - winitial_phase
        - imbalance
        - n_rms
        - p_rms

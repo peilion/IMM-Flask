@@ -6,6 +6,8 @@ from base.basic_base import Session
 from serializer.data_serializer import FeatureSchema
 import time
 from urllib import parse
+from sqlalchemy.orm import load_only,joinedload
+from models.declarative_models import Motor
 
 trend_parser = reqparse.RequestParser()
 trend_parser.add_argument('timeafter', location='args', required=False, type=str)
@@ -20,28 +22,43 @@ class MotorFeature(Resource):
     @swag_from('get.yaml')
     def get(self, id):
         args = trend_parser.parse_args()
-        if args['timeafter'] is not None or args['timebefore'] is not None:
-            args['timeafter'] = parse.unquote(args['timeafter'])
-            args['timebefore'] = parse.unquote(args['timebefore'])
+        columns = args['feature'].split(',')
+        feature = Feature.model(motor_id=id)
+        elecdata = ElectricalData.model(motor_id=id)
+        session = Session()
 
-            result = retrieve_model.get_motor_trend(id, args)
-            dic = {}
-            for row in result:
-                for key, value in row.items():
-                    if key == 'time':
-                        dic.setdefault(key, []).append(str(value))
-                    else:
-                        dic.setdefault(key, []).append(value)
-            return dic
-        elif args['newest'] is True:
-            feature = Feature.model(motor_id=id)
-            data = ElectricalData.model(motor_id=id)
-            session = Session()
-            data = session. \
-                query(feature.urms, feature.vrms, feature.wrms, feature.n_rms, feature.p_rms, feature.ufrequency.label('frequency')). \
-                order_by(feature.id.desc()).first()
+
+        if args['timeafter'] is not None or args['timebefore'] is not None:
+            data = session.query(feature, elecdata.time)
+            for item in columns:
+                data = data.options(load_only(item))  # query the given columns only
+            data = data.join(elecdata,feature.data_id==elecdata.id)
+            data = data.filter(elecdata.time>=args['timeafter'],elecdata.time<=args['timebefore']).all()
             session.close()
-            return FeatureSchema().dump(data).data
+            dic = {}
+            keys = data[0].keys()
+            for row in data:
+                for key in keys:
+                    if key == 'time':
+                        dic.setdefault(key, []).append(str(getattr(row,key)))
+                    else:
+                        for column in columns:
+                            dic.setdefault(column, []).append(getattr(getattr(row,key),column))
+            return dic
+
+        elif args['newest'] is True:
+            data = session.query(feature)
+            for item in columns:
+                data = data.options(load_only(item))
+            data = data.order_by(feature.id.desc()).first() # query 1
+
+            equip_info = session.query(Motor.name,Motor.sn, Motor.health_indicator).filter(Motor.id==id).one() # query 2
+
+            session.close()
+
+            result = {**data.__dict__,**equip_info._asdict()}
+
+            return FeatureSchema().dump(result)
 
         else:
             return {'Error message': 'Unproper query'}, 400

@@ -20,13 +20,14 @@ Scientific Computing
     - Scipy
 Periodic Task Management
     - Celery
+    - Flower
 Other Extensions
     - Flask Admin
     - Flask Monitoring Dashboard 
 ```
 
 
-## Build
+## Start
 
 ```bash
 # Start flask app
@@ -37,6 +38,25 @@ celery -A tasks beat --loglevel=info
 
 # Create periodic tasks consumer(worker)
 celery -A tasks worker --loglevel=info -P eventlet
+ 
+# Run celery Monitoring (Optional)
+celery flower
+```
+
+## To Do
+
+```bash
+- WebSocket for Monitoring 
+
+- Diagnosis and Prognosis
+
+- Warning and Periodic Record
+
+- Auth, Token and Permission
+
+- Markline for Charts
+
+- Celery Optimize and Test in Production
 ```
 
 

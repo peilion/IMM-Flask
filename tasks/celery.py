@@ -16,6 +16,8 @@ app = Celery('tasks',
 # Optional configuration, see the application user guide.
 app.conf.update(
     result_expires=10,
+    timezone='Asia/Shanghai',
+    worker_max_tasks_per_child=100
 )
 app.conf.beat_schedule = {
     "cal-feature-for-motor-3-in-60-seconds-task": {
@@ -41,7 +43,7 @@ def cal_feature(motor_id):
     table_id = motor_id % SHARDING_NUMBER
     feature = Feature.model(motor_id=motor_id)
     s = text(
-        'SELECT d.id, d.ucur as u , d.vcur as v,d.wcur as w from elecdata_{} as d LEFT JOIN feature_{} as f on d.id = f.data_id where f.data_id is null;'.format(
+        'SELECT d.id, d.ucur as u , d.vcur as v,d.wcur as w from elecdata_{} as d LEFT JOIN feature_{} as f on d.id = f.data_id where f.data_id is null limit 10;'.format(
             table_id, table_id))
     conn = engine.connect()
     result = conn.execute(s)

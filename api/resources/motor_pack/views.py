@@ -4,10 +4,11 @@ from processing.signals import dq0_transform, threephase_deserialize, fftransfor
 from models.sharding_models import ElectricalData, Feature
 from models.declarative_models import Motor
 from base.basic_base import Session
-from serializer.data_serializer import PackSchema, FeatureSchema, EnvelopeSchema, Array
+from serializer.data_serializer import PackSchema, PackHarmonicSchema, EnvelopeSchema, Array
 import numpy as np
 from serializer.data_serializer import Blob
 from scipy import signal
+
 
 pack_parser = reqparse.RequestParser()
 pack_parser.add_argument('timeafter', location='args', required=False, type=str)
@@ -169,7 +170,7 @@ class MotorPackHarmonic(Resource):
         data['vfft'] = np.around(fftransform(np.fromstring(data['v'], dtype=np.float32)), decimals=3)
         data['wfft'] = np.around(fftransform(np.fromstring(data['w'], dtype=np.float32)), decimals=3)
 
-        return FeatureSchema().dump(data)
+        return PackHarmonicSchema().dump(data)
 
 
 class MotorPackEnvelope(Resource):
