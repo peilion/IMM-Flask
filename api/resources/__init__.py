@@ -1,4 +1,4 @@
-from api.resources.auth.views import UserResource
+from api.resources.auth.views import UserResource,UserLogout
 from api.resources.motor.views import MotorDetail, MotorList
 from api.resources.equip_group.views import EquipGroupList, EquipGroupDetail
 from api.resources.bearing.views import BearingDetail, BearingInfo
@@ -13,7 +13,7 @@ from api.resources.motor_pack.views import MotorPackList, MotorPackDetail, Motor
     MotorPackEnvelope,MotorPackSymAnalysis
 
 __all__ = [
-    'UserResource',
+    'UserResource','UserLogout',
     'EquipGroupDetail', 'EquipGroupList',
     'MotorDetail', 'MotorList',
     'RotorDetail', 'RotorInfo',
