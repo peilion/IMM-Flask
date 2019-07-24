@@ -1,0 +1,23 @@
+swagger: "2.0"
+tags:
+  - Motor Diagnosis Standard
+consumes:
+- application/json
+- application/xml
+produces:
+- application/xml
+- application/json
+parameters:
+  - in: query
+    name: id
+    type: integer
+  - in: query
+    name: newest
+    required: false
+    type: boolean
+    default: true
+responses:
+  200:
+    description: Success
+  400:
+    description: Bad query

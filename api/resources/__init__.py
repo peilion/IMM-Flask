@@ -11,6 +11,7 @@ from api.resources.motor_phase.views import MotorUphaseParas, MotorUphaseSignal,
     MotorWphaseParas, MotorWphaseSignal
 from api.resources.motor_pack.views import MotorPackList, MotorPackDetail, MotorPackDQAnalysis, MotorPackHarmonic, \
     MotorPackEnvelope,MotorPackSymAnalysis
+from api.resources.diag_standard.views import *
 
 __all__ = [
     'UserResource','UserLogout',
@@ -25,5 +26,6 @@ __all__ = [
     'ServerStatu',
     'MotorUphaseParas', 'MotorUphaseSignal', 'MotorVphaseParas', 'MotorVphaseSignal', 'MotorWphaseParas','MotorThreephaseSignal',
     'MotorWphaseSignal',
-    'MotorPackList', 'MotorPackDetail', 'MotorPackDQAnalysis', 'MotorPackHarmonic', 'MotorPackEnvelope','MotorPackSymAnalysis'
+    'MotorPackList', 'MotorPackDetail', 'MotorPackDQAnalysis', 'MotorPackHarmonic', 'MotorPackEnvelope','MotorPackSymAnalysis',
+    'BearingStandardDetail','RotorStandardDetail','StatorStandardDetail','PowerStandardDetail'
 ]

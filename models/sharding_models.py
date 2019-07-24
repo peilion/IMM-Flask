@@ -95,6 +95,8 @@ class Feature(object):
                 z_rms=Column(Float, default=0),
                 imbalance=Column(Float, default=0),
 
+                health_indicator=Column(Float, default=85),
+
                 data_id=Column(BigInteger, ForeignKey('elecdata_{0}.id'.format(table_index)),unique=True),
 
                 # pack=relationship('currentspack_%d' % table_index, back_populates=cls.base_class_name),

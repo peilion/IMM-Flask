@@ -23,6 +23,6 @@ class UserResource(Resource):
         return self.userMap['admin']
 
 class UserLogout(Resource):
-    @swag_from('post.yaml')
+    @swag_from('get.yaml')
     def post(self):
         return 'success',200

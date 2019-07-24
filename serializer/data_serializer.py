@@ -1,7 +1,5 @@
-from marshmallow import Schema, fields, pprint
 import numpy as np
-from models.declarative_models import WarningLog, Motor
-from json import dump
+from marshmallow import Schema, fields
 
 
 class Blob(fields.Field):
@@ -21,6 +19,15 @@ class Array(fields.Field):
 
     def _serialize(self, value, attr, obj, **kwargs):
         return [round(float(item), 3) for item in value]
+
+    @staticmethod
+    def static_serialize(value):
+        return [round(float(item), 3) for item in value]
+
+class DoubleArray(fields.Field):
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        return [float(item) for item in value]
 
     @staticmethod
     def static_serialize(value):
@@ -130,9 +137,9 @@ class PackSchema(Schema):
 
 
 class EnvelopeSchema(Schema):
-    ufft = Array(dump_only=True)
-    vfft = Array(dump_only=True)
-    wfft = Array(dump_only=True)
+    ufft = DoubleArray(dump_only=True)
+    vfft = DoubleArray(dump_only=True)
+    wfft = DoubleArray(dump_only=True)
     u = Array(dump_only=True)
     v = Array(dump_only=True)
     w = Array(dump_only=True)

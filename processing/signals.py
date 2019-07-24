@@ -1,5 +1,5 @@
 import numpy as np
-
+from numpy import ndarray
 
 def threephase_deserialize(u, v, w):
     return np.fromstring(u, dtype=np.float32), np.fromstring(v, dtype=np.float32), np.fromstring(w, dtype=np.float32)
@@ -66,9 +66,14 @@ def to_complex(r, x, real_offset=0, imag_offset=0):
 
     return (real + 1j * imag)
 
-def fftransform(Signal):
+def fftransform(Signal :ndarray):
     # fft_size = int(Signal.shape[0])
-    spec = np.fft.rfft(Signal)
-    # freq = np.linspace(0, 10240 / 2, fft_size / 2 + 1)
+    N = Signal.shape[0]
+    spec = np.fft.fft(Signal)[0:int(N / 2)] / N  # FFT function from numpy
+    spec[1:] = 2 * spec[1:]  # need to take the single-sided spectrum only
     spec = np.abs(spec)
+
     return spec
+
+def db2percentage(db :float):
+    return 100.0 / (10.0 ** (db/20.0))

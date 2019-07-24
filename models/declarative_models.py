@@ -93,6 +93,11 @@ class Bearing(Asset, Base):
     roller_number = Column(SmallInteger, nullable=True)
     contact_angle = Column(Float, nullable=True)
 
+    bpfi = Column(Float, nullable=True)
+    bpfo = Column(Float, nullable=True)
+    bsf = Column(Float, nullable=True)
+    ftf = Column(Float, nullable=True)
+
     motor = relationship('Motor', back_populates='bearings')
 
 
@@ -139,9 +144,120 @@ class WarningLog(Base):
 
 class MonthlyRecord(Base):
     __tablename__ = 'monthlyrecord'
+    __table_args__ = table_args
 
     id = Column(Integer, primary_key=True)
     cr_time = Column(DateTime, nullable=True, default=func.now())
     description = Column(Text, nullable=False)
 
+
+
+class StatorEvalStd(Base):
+    __tablename__ = 'stator_evaluate_standard'
     __table_args__ = table_args
+
+    id = Column(Integer, primary_key=True)
+    i_imbalance_lv1 = Column(Float, default=2)
+    i_imbalance_lv2 = Column(Float, default=4)
+    i_imbalance_lv3 = Column(Float, default=10)
+
+    u_imbalance_lv1 = Column(Float, default=2)
+    u_imbalance_lv2 = Column(Float, default=4)
+    u_imbalance_lv3 = Column(Float, default=10)
+
+    irms_imbalance_lv1 = Column(Float, default=2)
+    irms_imbalance_lv2 = Column(Float, default=4)
+    irms_imbalance_lv3 = Column(Float, default=10)
+
+    har3_lv1 = Column(Float, default=0.5)
+    har3_lv2 = Column(Float, default=1)
+    har3_lv3 = Column(Float, default=2)
+
+    uz_type = Column(SmallInteger,default=1) # 0:额定报警 1:零序/正序报警, 针对绝缘故障
+    uz_imbalance_lv1 = Column(Float, default=2)
+    uz_imbalance_lv2 = Column(Float, default=4)
+    uz_imbalance_lv3 = Column(Float, default=10)
+
+    iz_type = Column(SmallInteger,default=1) # 0:额定报警 1:零序/正序报警，针对单相接地
+    iz_imbalance_lv1 = Column(Float, default=2)
+    iz_imbalance_lv2 = Column(Float, default=4)
+    iz_imbalance_lv3 = Column(Float, default=10)
+
+    md_time = Column(DateTime, default=func.now(), onupdate=func.now())
+
+
+class RotorEvalStd(Base):
+    __tablename__ = 'rotor_evaluate_standard'
+    __table_args__ = table_args
+
+    id = Column(Integer, primary_key=True)
+    slip = Column(Float,default=0.006)
+    sideband_lv1 = Column(Float,default=0.2)
+    sideband_lv2 = Column(Float, default=1.58)
+    sideband_lv3 = Column(Float, default=3.16)
+
+    md_time = Column(DateTime, default=func.now(), onupdate=func.now())
+
+class BearingEvalStd(Base):
+    __tablename__ = 'bearing_evaluate_standard'
+    __table_args__ = table_args
+
+    id = Column(Integer, primary_key=True)
+
+    bpfi_lv1 = Column(Float, default=0.5)
+    bpfi_lv2 = Column(Float, default=1.0)
+    bpfi_lv3 = Column(Float, default=2.0)
+
+    bsf_lv1 = Column(Float, default=0.5)
+    bsf_lv2 = Column(Float, default=1.0)
+    bsf_lv3 = Column(Float, default=2.0)
+
+    bpfo_lv1 = Column(Float, default=0.5)
+    bpfo_lv2 = Column(Float, default=1.0)
+    bpfo_lv3 = Column(Float, default=2.0)
+
+    ftf_lv1 = Column(Float, default=0.5)
+    ftf_lv2 = Column(Float, default=1.0)
+    ftf_lv3 = Column(Float, default=2.0)
+
+    har5_lv1 = Column(Float, default=0.5)
+    har5_lv2 = Column(Float, default=1.0)
+    har5_lv3 = Column(Float, default=2.0)
+
+    md_time = Column(DateTime, default=func.now(), onupdate=func.now())
+
+class PowerEvalStd(Base):
+    __tablename__ = 'power_evaluate_standard'
+    __table_args__ = table_args
+
+    id = Column(Integer, primary_key=True)
+
+    i_imbalance_lv1 = Column(Float, default=2)
+    i_imbalance_lv2 = Column(Float, default=4)
+    i_imbalance_lv3 = Column(Float, default=10)
+
+    u_imbalance_lv1 = Column(Float, default=2)
+    u_imbalance_lv2 = Column(Float, default=4)
+    u_imbalance_lv3 = Column(Float, default=10)
+
+    uthd_lv1 = Column(Float,default=4/3)
+    uthd_lv2 = Column(Float, default=8/3)
+    uthd_lv3 = Column(Float, default=4)
+
+    ithd_lv1 = Column(Float,default=4/3)
+    ithd_lv2 = Column(Float, default=8/3)
+    ithd_lv3 = Column(Float, default=4)
+
+    uhar_odd_lv1 = Column(Float, default=3.2/3)
+    uhar_odd_lv2 = Column(Float, default=3.2*2/3)
+    uhar_odd_lv3 = Column(Float, default=3.2)
+
+    uhar_even_lv1 = Column(Float, default=0.5)
+    uhar_even_lv2 = Column(Float, default=1.0)
+    uhar_even_lv3 = Column(Float, default=1.5)
+
+    power_factor_lv1 = Column(Float, default=0.8)
+    power_factor_lv2 = Column(Float, default=0.6)
+    power_factor_lv3 = Column(Float, default=0.4)
+
+    md_time = Column(DateTime, default=func.now(), onupdate=func.now())

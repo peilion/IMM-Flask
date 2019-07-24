@@ -187,6 +187,6 @@ class MotorPackEnvelope(Resource):
         for key in ['u', 'v', 'w']:
             data[key] = np.fromstring(data[key], dtype=np.float32)
             data[key + 'envelope'] = np.abs(signal.hilbert(data[key])[1024:1024 + 4096])
-            data[key + 'fft'] = np.around(fftransform(signal.detrend(data[key + 'envelope'])), decimals=3)
+            data[key + 'fft'] = fftransform(signal.detrend(data[key + 'envelope']))
             data[key] = data[key][1024:1024 + 4096]
         return EnvelopeSchema().dump(data)
