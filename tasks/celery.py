@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from celery import Celery
 from db_config import engine, SHARDING_NUMBER
 from sqlalchemy import text
-from processing.signals import threephase_deserialize
+from services.signals import threephase_deserialize
 from utils.feature_tools import feature_calculator
 from models.sharding_models import Feature
 from base.basic_base import Session

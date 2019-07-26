@@ -4,7 +4,7 @@ from models.declarative_models import Bearing
 from serializer.asset_serializer import BearingSchema
 from flasgger import swag_from
 from flask_restful import reqparse
-from fields.motor_fields import localtime
+from utils.costume_input_fields import localtime
 
 parser = reqparse.RequestParser()
 parser.add_argument('lr_time', location='args', required=False, type=localtime)

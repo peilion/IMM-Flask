@@ -1,6 +1,6 @@
 from flask_restful import reqparse, Resource, inputs
 from flasgger import swag_from
-from processing.signals import dq0_transform, threephase_deserialize, fftransform, cal_symm, make_phase
+from services.signals import dq0_transform, threephase_deserialize, fftransform, cal_symm, make_phase
 from models.sharding_models import ElectricalData, Feature
 from models.declarative_models import Motor
 from base.basic_base import Session

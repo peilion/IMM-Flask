@@ -20,7 +20,8 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 # init app object
 app = Flask(__name__)
 
-# init api dashboard, localhost:5000/dashboard u:admin p:admin
+# init api dashboard, localhost:5000/dashboard u:admin p:admin.
+# disable it in production enviorment.
 dashboard.bind(app)
 
 # configuring

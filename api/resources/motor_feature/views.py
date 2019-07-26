@@ -6,7 +6,7 @@ from base.basic_base import Session
 from serializer.data_serializer import FeatureSchema
 import time
 from urllib import parse
-from sqlalchemy.orm import load_only,joinedload
+from sqlalchemy.orm import load_only, joinedload
 from models.declarative_models import Motor
 
 trend_parser = reqparse.RequestParser()
@@ -19,46 +19,48 @@ trend_parser.add_argument('newest', location='args', required=False, type=inputs
 
 
 class MotorFeature(Resource):
+
+    def query_with_daterange(self):
+        session = Session()
+        data = session.query(self.feature, self.elecdata.time)
+        for item in self.columns:
+            data = data.options(load_only(item))  # query the given columns only
+        data = data.join(self.elecdata, self.feature.data_id == self.elecdata.id)
+        data = data.filter(self.elecdata.time >= self.args['timeafter'],
+                           self.elecdata.time <= self.args['timebefore']).all()
+        session.close()
+        dic = {}
+        keys = data[0].keys()
+        for row in data:
+            for key in keys:
+                if key == 'time':
+                    dic.setdefault(key, []).append(str(getattr(row, key)))
+                else:
+                    for column in self.columns:
+                        dic.setdefault(column, []).append(getattr(getattr(row, key), column))
+        return dic
+
+    def query_last(self):
+        session = Session()
+        data = session.query(self.feature)
+        for item in self.columns:
+            data = data.options(load_only(item))
+        data = data.order_by(self.feature.id.desc()).first()  # query 1
+        equip_info = session.query(Motor.name, Motor.sn, Motor.health_indicator).filter(Motor.id == self.id).one()  # query 2
+        session.close()
+        result = {**data.__dict__, **equip_info._asdict()}
+
+        return FeatureSchema().dump(result)
+
     @swag_from('get.yaml')
     def get(self, id):
-        args = trend_parser.parse_args()
-        columns = args['feature'].split(',')
-        feature = Feature.model(motor_id=id)
-        elecdata = ElectricalData.model(motor_id=id)
-        session = Session()
+        self.id = id
+        self.args = trend_parser.parse_args()
+        self.columns = self.args['feature'].split(',')
+        self.feature = Feature.model(motor_id=id)
+        self.elecdata = ElectricalData.model(motor_id=id)
 
-
-        if args['timeafter'] is not None or args['timebefore'] is not None:
-            data = session.query(feature, elecdata.time)
-            for item in columns:
-                data = data.options(load_only(item))  # query the given columns only
-            data = data.join(elecdata,feature.data_id==elecdata.id)
-            data = data.filter(elecdata.time>=args['timeafter'],elecdata.time<=args['timebefore']).all()
-            session.close()
-            dic = {}
-            keys = data[0].keys()
-            for row in data:
-                for key in keys:
-                    if key == 'time':
-                        dic.setdefault(key, []).append(str(getattr(row,key)))
-                    else:
-                        for column in columns:
-                            dic.setdefault(column, []).append(getattr(getattr(row,key),column))
-            return dic
-
-        elif args['newest'] is True:
-            data = session.query(feature)
-            for item in columns:
-                data = data.options(load_only(item))
-            data = data.order_by(feature.id.desc()).first() # query 1
-
-            equip_info = session.query(Motor.name,Motor.sn, Motor.health_indicator).filter(Motor.id==id).one() # query 2
-
-            session.close()
-
-            result = {**data.__dict__,**equip_info._asdict()}
-
-            return FeatureSchema().dump(result)
-
-        else:
-            return {'Error message': 'Unproper query'}, 400
+        meth_name = 'query_with_daterange' if (
+                self.args['timeafter'] is not None or self.args['timebefore'] is not None) else 'query_last'
+        meth = getattr(self, meth_name, None)
+        return meth()

@@ -4,7 +4,7 @@ from base.basic_base import Session
 from models.declarative_models import Motor, User
 from serializer.asset_serializer import MotorSchema, MotorStatuStatisticSchema, MotorCompStatisticSchema
 from models import retrieve_model
-from fields.motor_fields import localtime
+from utils.costume_input_fields import localtime
 
 motor_parser = reqparse.RequestParser()
 motor_parser.add_argument('group_by', location='args', required=False, type=str)
