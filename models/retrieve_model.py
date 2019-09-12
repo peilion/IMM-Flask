@@ -82,4 +82,3 @@ def get_motor_phase(id, args):
              'ORDER BY pack.id desc '
              'LIMIT 1'
              )
-

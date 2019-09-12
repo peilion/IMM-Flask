@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from flask import make_response, current_app
 from flask_restful.utils import PY3
 from flask import json
-
+import ujson
 
 def output_json(data, code, headers=None):
     """Makes a Flask response with a JSON encoded body"""
@@ -18,7 +18,7 @@ def output_json(data, code, headers=None):
 
     # always end the json dumps with a new line
     # see https://github.com/mitsuhiko/flask/pull/1262
-    dumped = json.dumps(data) + "\n"  # !this line bring huge performance improvement
+    dumped = ujson.dumps(data) + "\n"  # !this line bring huge performance improvement
 
     resp = make_response(dumped, code)
     resp.headers.extend(headers or {})

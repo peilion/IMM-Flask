@@ -24,6 +24,7 @@ class Array(fields.Field):
     def static_serialize(value):
         return [round(float(item), 3) for item in value]
 
+
 class DoubleArray(fields.Field):
 
     def _serialize(self, value, attr, obj, **kwargs):
@@ -37,7 +38,7 @@ class DoubleArray(fields.Field):
 class SubsampledBlob(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
         raw = np.fromstring(value, dtype=np.float32)
-        axis = np.linspace(0, raw.size, int(raw.size / 2),endpoint=False)
+        axis = np.linspace(0, raw.size, int(raw.size / 2), endpoint=False)
         return [round(float(item), 3) for item in np.take(raw, axis.astype(np.int))]
 
 
@@ -85,6 +86,7 @@ class PackHarmonicSchema(Schema):
     u = Blob(dump_only=True)
     v = Blob(dump_only=True)
     w = Blob(dump_only=True)
+
 
 class WarningSchema(Schema):
     name = fields.String()

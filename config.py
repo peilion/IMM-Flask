@@ -8,7 +8,6 @@ SWAGGER = {
     'title': 'Induction Motor Monitoring - Backend API',
 }
 
-
 CACHE_TYPE = 'redis'
 CACHE_DEFAULT_TIMEOUT = 50
 CACHE_REDIS_HOST = '127.0.0.1'

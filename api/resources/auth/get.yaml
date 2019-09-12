@@ -1,10 +1,10 @@
 swagger: "2.0"
 consumes:
-- application/json
-- application/xml
+  - application/json
+  - application/xml
 produces:
-- application/xml
-- application/json
+  - application/xml
+  - application/json
 tags:
   - Auth
 parameters:

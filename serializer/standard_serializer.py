@@ -1,11 +1,13 @@
 from marshmallow import Schema, fields
 
+
 class RotorStandardSchema(Schema):
     slip = fields.Float()
-    sideband_lv1 =  fields.Float()
-    sideband_lv2 =  fields.Float()
-    sideband_lv3 =  fields.Float()
-    md_time =fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+    sideband_lv1 = fields.Float()
+    sideband_lv2 = fields.Float()
+    sideband_lv3 = fields.Float()
+    md_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+
 
 class StatorStandardSchema(Schema):
     i_imbalance_lv1 = fields.Float()
@@ -29,12 +31,13 @@ class StatorStandardSchema(Schema):
     uz_imbalance_lv2 = fields.Float()
     uz_imbalance_lv3 = fields.Float()
 
-    iz_type =fields.Int()
+    iz_type = fields.Int()
     iz_imbalance_lv1 = fields.Float()
     iz_imbalance_lv2 = fields.Float()
     iz_imbalance_lv3 = fields.Float()
 
     md_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+
 
 class BearingStandardSchema(Schema):
     bpfi_lv1 = fields.Float()
@@ -53,10 +56,11 @@ class BearingStandardSchema(Schema):
     har5_lv2 = fields.Float()
     har5_lv3 = fields.Float()
 
-    md_time =fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+    md_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+
 
 class PowerStandardSchema(Schema):
-    i_imbalance_lv1 =fields.Float()
+    i_imbalance_lv1 = fields.Float()
     i_imbalance_lv2 = fields.Float()
     i_imbalance_lv3 = fields.Float()
 
@@ -76,7 +80,7 @@ class PowerStandardSchema(Schema):
     uhar_odd_lv2 = fields.Float()
     uhar_odd_lv3 = fields.Float()
 
-    uhar_even_lv1 =fields.Float()
+    uhar_even_lv1 = fields.Float()
     uhar_even_lv2 = fields.Float()
     uhar_even_lv3 = fields.Float()
 
@@ -84,4 +88,4 @@ class PowerStandardSchema(Schema):
     power_factor_lv2 = fields.Float()
     power_factor_lv3 = fields.Float()
 
-    md_time =fields.DateTime(format='%Y-%m-%d %H:%M:%S')
+    md_time = fields.DateTime(format='%Y-%m-%d %H:%M:%S')

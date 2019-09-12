@@ -20,7 +20,7 @@ class MotorDetail(Resource):
         if args['info']:
             session = Session()
             motor = session.query(Motor.phase_number, Motor.pole_pairs_number, Motor.turn_number,
-                                    Motor.rated_voltage, Motor.rated_speed).filter_by(id=id).one()
+                                  Motor.rated_voltage, Motor.rated_speed).filter_by(id=id).one()
             return MotorSchema().dump(motor)
         else:
             session = Session()

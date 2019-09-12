@@ -36,6 +36,7 @@ class StatorDetail(Resource):
 
         return {'message': 'Success'}
 
+
 class StatorInfo(Resource):
     @swag_from('get.yaml')
     def get(self, id):

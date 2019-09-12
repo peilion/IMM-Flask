@@ -2,11 +2,11 @@ swagger: "2.0"
 tags:
   - Motor Feature
 consumes:
-- application/json
-- application/xml
+  - application/json
+  - application/xml
 produces:
-- application/xml
-- application/json
+  - application/xml
+  - application/json
 parameters:
   - in: path
     name: id
@@ -22,31 +22,31 @@ parameters:
     items:
       type: string
       enum:
-       - urms
-       - uthd
-       - umax_current
-       - umin_current
-       - ufrequency
-       - uamplitude
-       - uinitial_phase
-       - vrms
-       - vthd
-       - vmax_current
-       - vmin_current
-       - vfrequency
-       - vamplitude
-       - vinitial_phase
-       - wrms
-       - wthd
-       - wmax_current
-       - wmin_current
-       - wfrequency
-       - wamplitude
-       - winitial_phase
-       - imbalance
-       - n_rms
-       - p_rms
-       - z_rms
+        - urms
+        - uthd
+        - umax_current
+        - umin_current
+        - ufrequency
+        - uamplitude
+        - uinitial_phase
+        - vrms
+        - vthd
+        - vmax_current
+        - vmin_current
+        - vfrequency
+        - vamplitude
+        - vinitial_phase
+        - wrms
+        - wthd
+        - wmax_current
+        - wmin_current
+        - wfrequency
+        - wamplitude
+        - winitial_phase
+        - imbalance
+        - n_rms
+        - p_rms
+        - z_rms
   - in: query
     name: timeafter
     required: false

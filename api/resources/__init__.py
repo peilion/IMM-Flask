@@ -1,4 +1,4 @@
-from api.resources.auth.views import UserResource,UserLogout
+from api.resources.auth.views import UserResource, UserLogout
 from api.resources.motor.views import MotorDetail, MotorList
 from api.resources.equip_group.views import EquipGroupList, EquipGroupDetail
 from api.resources.bearing.views import BearingDetail, BearingInfo
@@ -7,14 +7,15 @@ from api.resources.stator.views import StatorDetail, StatorInfo
 from api.resources.motor_feature.views import MotorFeature
 from api.resources.motor_warning.views import MotorWarningList, MotorWarning
 from api.resources.server_statu.views import ServerStatu
-from api.resources.motor_phase.views import MotorUphaseParas, MotorUphaseSignal, MotorVphaseParas, MotorVphaseSignal,MotorThreephaseSignal, \
+from api.resources.motor_phase.views import MotorUphaseParas, MotorUphaseSignal, MotorVphaseParas, MotorVphaseSignal, \
+    MotorThreephaseSignal, \
     MotorWphaseParas, MotorWphaseSignal
 from api.resources.motor_pack.views import MotorPackList, MotorPackDetail, MotorPackDQAnalysis, MotorPackHarmonic, \
-    MotorPackEnvelope,MotorPackSymAnalysis
+    MotorPackEnvelope, MotorPackSymAnalysis
 from api.resources.diag_standard.views import *
 
 __all__ = [
-    'UserResource','UserLogout',
+    'UserResource', 'UserLogout',
     'EquipGroupDetail', 'EquipGroupList',
     'MotorDetail', 'MotorList',
     'RotorDetail', 'RotorInfo',
@@ -24,8 +25,10 @@ __all__ = [
     'MotorWarningList',
     'MotorWarning',
     'ServerStatu',
-    'MotorUphaseParas', 'MotorUphaseSignal', 'MotorVphaseParas', 'MotorVphaseSignal', 'MotorWphaseParas','MotorThreephaseSignal',
+    'MotorUphaseParas', 'MotorUphaseSignal', 'MotorVphaseParas', 'MotorVphaseSignal', 'MotorWphaseParas',
+    'MotorThreephaseSignal',
     'MotorWphaseSignal',
-    'MotorPackList', 'MotorPackDetail', 'MotorPackDQAnalysis', 'MotorPackHarmonic', 'MotorPackEnvelope','MotorPackSymAnalysis',
-    'BearingStandardDetail','RotorStandardDetail','StatorStandardDetail','PowerStandardDetail'
+    'MotorPackList', 'MotorPackDetail', 'MotorPackDQAnalysis', 'MotorPackHarmonic', 'MotorPackEnvelope',
+    'MotorPackSymAnalysis',
+    'BearingStandardDetail', 'RotorStandardDetail', 'StatorStandardDetail', 'PowerStandardDetail'
 ]

@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flasgger import swag_from
 from extensions import cache
 
+
 class UserResource(Resource):
     userMap = {
         'admin': {
@@ -22,7 +23,8 @@ class UserResource(Resource):
     def post(self):
         return self.userMap['admin']
 
+
 class UserLogout(Resource):
     @swag_from('get.yaml')
     def post(self):
-        return 'success',200
+        return 'success', 200

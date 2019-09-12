@@ -34,7 +34,6 @@ text_type = lambda x: six.text_type(x)
 
 
 class Argument(object):
-
     """
     :param name: Either a name or a list of option strings, e.g. foo or
         -f, --foo.
@@ -102,9 +101,9 @@ class Argument(object):
         return "{0}('{1}', default={2}, dest={3}, required={4}, ignore={5}, location={6}, " \
                "type=\"{7}\", choices={8}, action='{9}', help={10}, case_sensitive={11}, " \
                "operators={12}, store_missing={13}, trim={14}, nullable={15})".format(
-                self.__class__.__name__, self.name, self.default, self.dest, self.required, self.ignore, self.location,
-                self.type, self.choices, self.action, self.help, self.case_sensitive,
-                self.operators, self.store_missing, self.trim, self.nullable)
+            self.__class__.__name__, self.name, self.default, self.dest, self.required, self.ignore, self.location,
+            self.type, self.choices, self.action, self.help, self.case_sensitive,
+            self.operators, self.store_missing, self.trim, self.nullable)
 
     def source(self, request):
         """Pulls values off the request in the provided location
@@ -220,8 +219,8 @@ class Argument(object):
                                 ValueError(u"{0} is not a valid choice".format(
                                     value)), bundle_errors)
                         self.handle_validation_error(
-                                ValueError(u"{0} is not a valid choice".format(
-                                    value)), bundle_errors)
+                            ValueError(u"{0} is not a valid choice".format(
+                                value)), bundle_errors)
 
                     if name in request.unparsed_arguments:
                         request.unparsed_arguments.pop(name)

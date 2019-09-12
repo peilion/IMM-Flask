@@ -7,7 +7,7 @@ blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(blueprint)
 
 api.add_resource(UserResource, '/user/login/', '/user/info/')
-api.add_resource(UserLogout,'/user/logout/')
+api.add_resource(UserLogout, '/user/logout/')
 api.add_resource(EquipGroupDetail, '/equipgroup/<string:id>/')
 api.add_resource(EquipGroupList, '/equipgroup/')
 api.add_resource(MotorDetail, '/motor/<string:id>/')

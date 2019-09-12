@@ -151,7 +151,6 @@ class MonthlyRecord(Base):
     description = Column(Text, nullable=False)
 
 
-
 class StatorEvalStd(Base):
     __tablename__ = 'stator_evaluate_standard'
     __table_args__ = table_args
@@ -173,12 +172,12 @@ class StatorEvalStd(Base):
     har3_lv2 = Column(Float, default=1)
     har3_lv3 = Column(Float, default=2)
 
-    uz_type = Column(SmallInteger,default=1) # 0:额定报警 1:零序/正序报警, 针对绝缘故障
+    uz_type = Column(SmallInteger, default=1)  # 0:额定报警 1:零序/正序报警, 针对绝缘故障
     uz_imbalance_lv1 = Column(Float, default=2)
     uz_imbalance_lv2 = Column(Float, default=4)
     uz_imbalance_lv3 = Column(Float, default=10)
 
-    iz_type = Column(SmallInteger,default=1) # 0:额定报警 1:零序/正序报警，针对单相接地
+    iz_type = Column(SmallInteger, default=1)  # 0:额定报警 1:零序/正序报警，针对单相接地
     iz_imbalance_lv1 = Column(Float, default=2)
     iz_imbalance_lv2 = Column(Float, default=4)
     iz_imbalance_lv3 = Column(Float, default=10)
@@ -191,12 +190,13 @@ class RotorEvalStd(Base):
     __table_args__ = table_args
 
     id = Column(Integer, primary_key=True)
-    slip = Column(Float,default=0.006)
-    sideband_lv1 = Column(Float,default=0.2)
+    slip = Column(Float, default=0.006)
+    sideband_lv1 = Column(Float, default=0.2)
     sideband_lv2 = Column(Float, default=1.58)
     sideband_lv3 = Column(Float, default=3.16)
 
     md_time = Column(DateTime, default=func.now(), onupdate=func.now())
+
 
 class BearingEvalStd(Base):
     __tablename__ = 'bearing_evaluate_standard'
@@ -226,6 +226,7 @@ class BearingEvalStd(Base):
 
     md_time = Column(DateTime, default=func.now(), onupdate=func.now())
 
+
 class PowerEvalStd(Base):
     __tablename__ = 'power_evaluate_standard'
     __table_args__ = table_args
@@ -240,16 +241,16 @@ class PowerEvalStd(Base):
     u_imbalance_lv2 = Column(Float, default=4)
     u_imbalance_lv3 = Column(Float, default=10)
 
-    uthd_lv1 = Column(Float,default=4/3)
-    uthd_lv2 = Column(Float, default=8/3)
+    uthd_lv1 = Column(Float, default=4 / 3)
+    uthd_lv2 = Column(Float, default=8 / 3)
     uthd_lv3 = Column(Float, default=4)
 
-    ithd_lv1 = Column(Float,default=4/3)
-    ithd_lv2 = Column(Float, default=8/3)
+    ithd_lv1 = Column(Float, default=4 / 3)
+    ithd_lv2 = Column(Float, default=8 / 3)
     ithd_lv3 = Column(Float, default=4)
 
-    uhar_odd_lv1 = Column(Float, default=3.2/3)
-    uhar_odd_lv2 = Column(Float, default=3.2*2/3)
+    uhar_odd_lv1 = Column(Float, default=3.2 / 3)
+    uhar_odd_lv2 = Column(Float, default=3.2 * 2 / 3)
     uhar_odd_lv3 = Column(Float, default=3.2)
 
     uhar_even_lv1 = Column(Float, default=0.5)

@@ -219,6 +219,7 @@ def positive(value, argument='argument'):
 
 class int_range(object):
     """ Restrict input to an integer in a range (inclusive) """
+
     def __init__(self, low, high, argument='argument'):
         self.low = low
         self.high = high

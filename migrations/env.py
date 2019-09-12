@@ -22,10 +22,10 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 
 
-
 from base.basic_base import Base
 from models.declarative_models import *
 from models.sharding_models import *
+
 target_metadata = Base.metadata
 
 

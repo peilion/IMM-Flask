@@ -1,21 +1,18 @@
-from flask import Flask
-import api
-from flasgger import Swagger
-from flask_cors import CORS
 import os
-from extensions import cache
-import numpy as np
-import scipy
 import sys
+
+from flasgger import Swagger
+from flask import Flask
+from flask_cors import CORS
+
+import api
 import flask_monitoringdashboard as dashboard
 from admin import make_admin
-
 
 # Build paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
-
 
 # init app object
 app = Flask(__name__)
@@ -48,5 +45,4 @@ app.register_blueprint(api.views.blueprint)
 admin = make_admin(app)
 
 if __name__ == '__main__':
-
     app.run()

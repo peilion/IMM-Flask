@@ -2,11 +2,11 @@ swagger: "2.0"
 tags:
   - Motor
 consumes:
-- application/json
-- application/xml
+  - application/json
+  - application/xml
 produces:
-- application/xml
-- application/json
+  - application/xml
+  - application/json
 parameters:
   - in: query
     name: group_by
@@ -14,8 +14,8 @@ parameters:
     description: field used for filter motor
     type: string
     enum:
-    - statu
-    - comps
+      - statu
+      - comps
 responses:
   200:
     description: Statistic of the motors.

@@ -3,8 +3,9 @@ from numpy import ndarray
 import numpy as np
 from scipy import signal
 
+
 class ElectricSignal:
-    def __init__(self, signal:bytes):
+    def __init__(self, signal: bytes):
         self.data = signal
         self.dedata = None
         self.dtype = np.float32
@@ -13,7 +14,6 @@ class ElectricSignal:
         self.spec = None
         self.freq_axis = None
         self.preprocess()
-
 
     def __len__(self):
         return self.dedata.shape[0]
@@ -29,17 +29,18 @@ class ElectricSignal:
         self.dedata = signal.detrend(self.dedata)
 
     def compute_timeaxis(self):
-        self.time_axis = np.linspace(0, len(self)/self.rate, len(self))
+        self.time_axis = np.linspace(0, len(self) / self.rate, len(self))
 
     def compute_fft(self):
         spec = np.fft.fft(self.dedata)[0:int(len(self) / 2)] / len(self)  # FFT function from numpy
         spec[1:] = 2 * spec[1:]  # need to take the single-sided spectrum only
-        self.spec =  np.abs(spec)
+        self.spec = np.abs(spec)
+
 
 class MotorDiagnosis:
 
     def __init__(self, u: ndarray, v: ndarray, w: ndarray):
-        self.signal = [u,v,w]
+        self.signal = [u, v, w]
         self.fft = []
         self.rate = 20480
         self.lenth = u.shape[0]

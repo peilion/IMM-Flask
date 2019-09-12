@@ -46,7 +46,8 @@ class MotorFeature(Resource):
         for item in self.columns:
             data = data.options(load_only(item))
         data = data.order_by(self.feature.id.desc()).first()  # query 1
-        equip_info = session.query(Motor.name, Motor.sn, Motor.health_indicator).filter(Motor.id == self.id).one()  # query 2
+        equip_info = session.query(Motor.name, Motor.sn, Motor.health_indicator).filter(
+            Motor.id == self.id).one()  # query 2
         session.close()
         result = {**data.__dict__, **equip_info._asdict()}
 

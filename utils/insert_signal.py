@@ -7,6 +7,7 @@ import MySQLdb
 import numpy as np
 from utils.feature_tools import feature_calculator
 from numpy import ndarray
+
 SAMPLING_RATE = 20480
 # ROOT_PATHS = [r"G:\Researchs\Motor fusion\30HzData", r"G:\Researchs\Motor fusion\40HzData", r"G:\Researchs\Motor fusion\50HzData"]
 ROOT_PATHS = [r"G:\Researchs\Motor fusion\nEW\30HzData", r"G:\Researchs\Motor fusion\nEW\40HzData",
@@ -37,10 +38,15 @@ for root_path, shift in zip(ROOT_PATHS, PHASE_SHIFT):
 
                 result = connection.execute(s,
                                             motor_id=motor_id,
-                                            u=MySQLdb.Binary(data[1000 + i * 10000 - shift: 1000 + i * 10000 + 8192 - shift].astype(np.float32)),
-                                            v=MySQLdb.Binary(data[1000 + i * 10000: 1000 + i * 10000 + 8192].astype(np.float32)),
-                                            w=MySQLdb.Binary(data[1000 + i * 10000 + shift: 1000 + i * 10000 + 8192 + shift].astype(np.float32)))
-        print(file+' processed!')
+                                            u=MySQLdb.Binary(
+                                                data[1000 + i * 10000 - shift: 1000 + i * 10000 + 8192 - shift].astype(
+                                                    np.float32)),
+                                            v=MySQLdb.Binary(
+                                                data[1000 + i * 10000: 1000 + i * 10000 + 8192].astype(np.float32)),
+                                            w=MySQLdb.Binary(
+                                                data[1000 + i * 10000 + shift: 1000 + i * 10000 + 8192 + shift].astype(
+                                                    np.float32)))
+        print(file + ' processed!')
     motor_id = motor_id + 1
 
 # UPDATE datetime field

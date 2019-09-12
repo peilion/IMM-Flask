@@ -9,7 +9,6 @@ import numpy as np
 from serializer.data_serializer import Blob
 from scipy import signal
 
-
 pack_parser = reqparse.RequestParser()
 pack_parser.add_argument('timeafter', location='args', required=False, type=str)
 pack_parser.add_argument('timebefore', location='args', required=False, type=str)
