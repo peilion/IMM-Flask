@@ -47,5 +47,5 @@ SQLAlchemy==1.3.3
 SQLAlchemy-Utils==0.33.11
 tzlocal==2.0.0b2
 vine==1.3.0
-Werkzeug==0.15.2
+Werkzeug==0.15.3
 WTForms==2.2.1
